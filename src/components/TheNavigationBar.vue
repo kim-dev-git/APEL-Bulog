@@ -8,7 +8,7 @@
       id="base-bg"
     >
       <v-container>
-        <v-layout column class="mx-n4 mx-md-0">
+        <v-layout column class="mx-n4 mx-xl-0">
           <v-card class="pa-4" style="height: 55px">
             <v-layout class="align-center mt-n3">
               <v-app-bar-nav-icon v-if="!$vuetify.breakpoint.smAndUp" @click="drawer = !drawer" />

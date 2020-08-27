@@ -17,17 +17,11 @@ import 'jspdf-autotable'
 import headerBulog from '@/assets/header-bulog.js'
 export default {
   props: [
-    'body'
+    'headers',
+    'body',
   ],
   data: () => ({
-    headers: [
-      { header: 'Nomor', dataKey: 'no' },
-      { header: 'Kepada', dataKey: 'to' },
-      { header: 'Dari', dataKey: 'from' },
-      { header: 'Asal Berita', dataKey: 'origin' },
-      { header: 'Perihal', dataKey: 'subject' },
-      { header: 'Jumlah Lembar', dataKey: 'sheets' },
-    ]
+    //
   }),
   methods: {
     print() {

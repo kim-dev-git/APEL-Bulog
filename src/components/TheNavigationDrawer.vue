@@ -2,6 +2,7 @@
   <v-navigation-drawer
     app
     dark
+    :permanent="$vuetify.breakpoint.smAndUp"
     class="base-dark-bg"
     v-model="active" >
     <v-list-item

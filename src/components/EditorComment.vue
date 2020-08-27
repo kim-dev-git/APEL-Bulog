@@ -4,20 +4,20 @@
       v-if="text"
       icon
       class="editor-notes"
-      @click="$emit('input', !value)" >
+      @click.stop="$emit('input', !value)" >
       <v-icon v-text="'mdi-comment-alert'" />
     </v-btn>
     <v-btn
       v-if="!text && userProfile && userProfile.position === 'Pimwil'"
       icon
       class="editor-notes"
-      @click="$emit('add')" >
+      @click.stop="$emit('add')" >
       <v-icon v-text="'mdi-comment-edit'" />
     </v-btn>
     <v-card
       v-if="value"
       class="editor-comment warning white--text"
-      @click="userProfile.position === 'Pimwil' ? $emit('remove') : ''" >
+      @click.stop="userProfile.position === 'Pimwil' ? $emit('remove') : ''" >
       <span v-text="text" />
     </v-card>
   </div>

@@ -3,125 +3,44 @@
     class="mt-4">
     <v-layout
       class="justify-center">
+
       <v-card
         class="pa-4"
         width="600">
-        <v-layout>
+        <v-layout id="print-document">
           <v-spacer />
-          <print-document :body="document" />
+          <print-document :headers="headers" :body="document" />
         </v-layout>
-        <v-list>
-          <v-list-item-group>
-            <v-list-item
-              dense
-              v-for="form in forms"
-              :key="form.value"
-              @click="editDocument(form.value)" >
-              <v-list-item-content>
-                <p class="mb-0 body-2" v-text="form.label" />
-              </v-list-item-content>
-              <v-list-item-action>
-                <p class="mb-0 body-2" v-if="document && document[form.value]" v-text="document[form.value]" />
-              </v-list-item-action>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
+
+        <editor-header
+          :forms="forms"
+          :document="document"
+          @click="editDocument($event)"
+        />
 
         <v-divider />
 
-        <v-card-title
-          class="subtitle-2"
-          v-html="'Isi berita :'"
+        <editor-body
+          :document="document"
+          :commentsActive="commentsActive"
+          @add-body="addContent($event)"
+          @edit-body="editContent($event)"
+          @active-comment="$set(commentsActive, $event.edit, $event.value)"
+          @add-comment="dialogCommentNew = true, selectedField = $event"
+          @remove-comment="dialogCommentRemove = true, selectedField = $event"
         />
-        <v-layout id="content-loaded"
-          v-if="document && document.content && document.content.body"
-          column
-          class="mt-n4 red" >
-          <v-list
-            class="mx-n4 body-2 font-weight-regular" >
-            <v-list-item-group>
-              <v-list-item id="list-item-body"
-                class="px-8" >
-                <p
-                  class="mb-0 text-justify"
-                  v-html="document.content.body"
-                  @click="editContent('body')"
-                />
-                <editor-comment
-                  v-if="document"
-                  :value="commentsActive.body"
-                  :text="document.notes ? document.notes.body : ''"
-                  @input="$set(commentsActive, 'body', $event)"
-                  @add="dialogCommentNew = true, selectedField = 'body'"
-                  @remove="dialogCommentRemove = true, selectedField = 'body'"
-                />
-              </v-list-item>
-
-              <v-list-item id="list-item-list"
-                v-for="(text, index) in document.content.list"
-                :key="index"
-                class="px-8" >
-                <v-layout
-                  @click="editContent(index)">
-                  <span
-                    class="mr-2"
-                    v-html="(index + 1) + '.'"
-                  />
-                  <p
-                    class="my-0 text-justify"
-                    v-html="text"
-                  />
-                </v-layout>
-                
-                <editor-comment
-                  v-if="document"
-                  :value="commentsActive[index]"
-                  :text="document.notes ? document.notes[index] : ''"
-                  @input="$set(commentsActive, [index], $event)"
-                  @add="dialogCommentNew = true, selectedField = index"
-                  @remove="dialogCommentRemove = true, selectedField = index"
-                />
-              </v-list-item>
-
-              <v-btn
-                color="info"
-                class="editor-button"
-                @click="addContent(document.content.list.length)" >
-                <span v-text="'Tambah list'" />
-              </v-btn>
-
-              <v-list-item id="list-item-footer"
-                v-if="document"
-                class="px-8" >
-                <p
-                  class="mb-0 text-justify"
-                  v-html="document.content.footer"
-                  @click="editContent('footer')"
-                />
-                <editor-comment
-                  v-if="document"
-                  :value="commentsActive.footer"
-                  :text="document.notes ? document.notes.footer : ''"
-                  @input="$set(commentsActive, 'footer', $event)"
-                  @add="dialogCommentNew = true, selectedField = 'footer'"
-                  @remove="dialogCommentRemove = true, selectedField = 'footer'"
-                />
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-          
-        </v-layout>
-        
-        <v-layout id="content-loading"
-          v-else
-          class="justify-center">
-          Sedang memmuat...
-        </v-layout>
 
       </v-card>
     </v-layout>
 
-    <v-bottom-sheet id="dialog-document-edit"
+    <dialog-sheet id="dialog-document-edit"
+      v-model="dialogDocumentEdit"
+      :data="selectedField"
+      :form="formDocumentEdit"
+      @save="updateDocument()"
+    />
+
+    <!-- <v-bottom-sheet id="dialog-document-edit"
       persistent
       max-width="640"
       v-model="dialogDocumentEdit" >
@@ -160,7 +79,7 @@
           </v-btn>
         </v-layout>
       </v-sheet>
-    </v-bottom-sheet>
+    </v-bottom-sheet> -->
 
     <v-bottom-sheet id="dialog-content-edit"
       persistent
@@ -177,7 +96,7 @@
             color="error"
             class="text-none"
             @click="dialogContentRemove = true" >
-            <v-icon left v-text="'mdi-printer'" />
+            <v-icon left v-text="'mdi-delete-outline'" />
             Hapus
           </v-btn>
           <v-btn
@@ -358,15 +277,29 @@
 
 <script>
 
+import EditorHeader from '@/components/EditorHeader'
+import EditorBody from '@/components/EditorBody'
 import EditorComment from '@/components/EditorComment'
 import PrintDocument from '@/components/PrintDocument'
+import DialogSheet from '@/components/DialogSheet'
 export default {
   components: {
+    EditorHeader,
+    EditorBody,
     EditorComment,
     PrintDocument,
+    DialogSheet,
   },
   props: [ 'id' ],
   data: () => ({
+    headers: [
+      { header: 'Nomor', dataKey: 'no' },
+      { header: 'Kepada', dataKey: 'to' },
+      { header: 'Dari', dataKey: 'from' },
+      { header: 'Asal Berita', dataKey: 'origin' },
+      { header: 'Perihal', dataKey: 'subject' },
+      { header: 'Jumlah Lembar', dataKey: 'sheets' },
+    ],
     forms: [
       { label: 'Nomor', type: 'text', value: 'no' },
       { label: 'Kepada', type: 'text', value: 'to' },
@@ -435,11 +368,19 @@ export default {
       this.dialogContentRemove = true
     },
     async removeContent() {
+      this.formContentEdit = JSON.parse(JSON.stringify(this.document))
+      let data = this.formContentEdit
+
       var value = this.selectedField
       var arr = this.formContentEdit.content.list
-      console.log(arr.length)
       arr.splice(value, 1)
+
+      // Remove Comment
+      data.notes[value] = null
+      this.commentsActive[value] = false
+
       this.updateContent()
+      // this.removeComment()
     },
     createComment() {
       this.formContentEdit = JSON.parse(JSON.stringify(this.document))
