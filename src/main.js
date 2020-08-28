@@ -25,5 +25,6 @@ auth.onAuthStateChanged((user) => {
     store.dispatch('user/get', user)
     store.dispatch('faxin/get')
     store.dispatch('faxout/get')
+    store.dispatch('internalnotes/get')
   }
 })

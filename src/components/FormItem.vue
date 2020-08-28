@@ -43,6 +43,29 @@
         </v-dialog>
       </v-layout>
     </div>
+
+    
+
+    <div id="input-file"
+      v-else-if="form.type === 'file'">
+      <v-layout
+        style="height: 55px"
+        class="align-center" >
+        <v-icon v-if="form.icon" class="mx-4">{{ form.icon }}</v-icon>
+        <v-layout>
+          <v-file-input
+            accept=".doc, .docx, .pdf"
+            style="width: 100%; height: 55px"
+            :class="!form.icon ? 'ml-1' : ''"
+            :id="form.value"
+            :type="form.type"
+            :label="form.label"
+            v-model="newValue"
+            @change="updateData($event)"
+          />
+        </v-layout>
+      </v-layout>
+    </div>
     
     <v-divider />
   </div>

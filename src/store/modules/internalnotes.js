@@ -1,6 +1,6 @@
 import * as fb from '@/firebase'
 
-const END_POINT = 'faxIn'
+const END_POINT = 'internalNotes'
 const ref = fb.db.collection(END_POINT)
 
 const state = {
@@ -9,10 +9,10 @@ const state = {
 }
 
 const mutations = {
-  setFaxIns(state, val) {
+  setInternalNotes(state, val) {
     state.collection = val
   },
-  setFaxIn(state, val) {
+  setInternalNote(state, val) {
     state.document = val
   },
 }
@@ -27,7 +27,7 @@ const actions = {
 
     if(form.file){
       var file = form.file
-      var storageRef = await fb.storage.ref('fax-in/' + id + '.' + file.name.split('.').pop());
+      var storageRef = await fb.storage.ref('internal-notes/' + id + '.' + file.name.split('.').pop());
       var task = storageRef.put(file)
       task.on('state_changed', snapshot => {
         var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100).toFixed(0)
@@ -65,11 +65,11 @@ const actions = {
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
-              body: `Fax berhasil ditambahkan.`,
+              body: `Nota intern berhasil ditambahkan.`,
             }, { root: true })
           }).catch(err => {
             dispatch('notifications/post', {
-              title: `Fax gagal ditambahkan.`,
+              title: `Nota intern gagal ditambahkan.`,
               body: err,
               timeout: 60
             }, { root: true })
@@ -88,7 +88,7 @@ const actions = {
       const query = await ref.doc(id).get()
       const object = query.data()
       object.id = id
-      commit('setFaxIn', object)
+      commit('setInternalNote', object)
     } else {
       const query = await ref.onSnapshot(snapshoot => {
         let array = []
@@ -100,7 +100,7 @@ const actions = {
           array.push(object)
         })
 
-        commit('setFaxIns', array)
+        commit('setInternalNotes', array)
       })
     }
   },
@@ -111,7 +111,7 @@ const actions = {
     if(form.file){
       var file = form.file
 
-      var storageRef = await fb.storage.ref('fax-in/' + id + '.' + file.name.split('.').pop())
+      var storageRef = await fb.storage.ref('internal-notes/' + id + '.' + file.name.split('.').pop())
       var task = storageRef.put(file)
       task.on('state_changed', snapshot => {
         var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100).toFixed(0)
@@ -149,11 +149,11 @@ const actions = {
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
-              body: `Fax berhasil diupdate.`,
+              body: `Nota intern berhasil diupdate.`,
             }, { root: true })
           }).catch(err => {
             dispatch('notifications/post', {
-              title: `Fax gagal diupdate.`,
+              title: `Nota intern gagal diupdate.`,
               body: err,
               timeout: 60
             }, { root: true })
@@ -171,11 +171,11 @@ const actions = {
         commit('setLoading', null, { root: true })
         dispatch('notifications/post', {
           // title: 'Update profil berhasil.',
-          body: `Fax berhasil diupdate.`,
+          body: `Nota intern berhasil diupdate.`,
         }, { root: true })
       }).catch(err => {
         dispatch('notifications/post', {
-          title: `Fax gagal diupdate.`,
+          title: `Nota intern gagal diupdate.`,
           body: err,
           timeout: 60
         }, { root: true })
@@ -192,14 +192,14 @@ const actions = {
 
     await ref.doc(fax.id).delete().then(function() {
       if(fax.fileURL) {
-        var storageRef = fb.storage.ref('fax-in/' + fax.id + '.' + fax.fileExt)
+        var storageRef = fb.storage.ref('internal-notes/' + fax.id + '.' + fax.fileExt)
         storageRef.delete()
       }
       dispatch('get')
       commit('setLoading', null, { root: true })
       dispatch('notifications/post', {
         // title: 'Update profil berhasil.',
-        body: `Fax berhasil dihapus.`,
+        body: `Nota intern berhasil dihapus.`,
       }, { root: true })
     }).catch(err => {
       commit('setLoading', null, { root: true })

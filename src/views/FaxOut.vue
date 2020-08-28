@@ -7,53 +7,31 @@
       :headersPrint="headersPrint"
       :items="faxOutCollection"
       :sortBy="'createdAt'"
+      desc
       @button-click="dialogAdd = true"
       expand >
 
       <template #row="{ value, header, item }">
-        <v-layout
+        <v-layout id="action"
           v-if="header.value === 'action'" >
-          <!-- <v-btn
-            @click="$set(item, 'expanded', !item.expanded)"
-            icon>
-            <v-icon v-text="'mdi-chevron-down'" />
-          </v-btn> -->
-          <!-- <v-menu
-            transition="slide-y-transition"
-            bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                icon
-              >
-                <v-icon v-text="'mdi-dots-horizontal'" />
-              </v-btn>
-            </template>
-            <v-list
-              class="pa-0">
-              <v-list-item
-                v-for="(menu, i) in menuActions"
-                :key="i"
-                @click="menuAction(menu.action, item)"
-                dense
-              >
-                <v-layout>
-                  <v-icon v-text="menu.icon" :color="menu.color" left />
-                  <span v-text="menu.text" class="subtitle-2" :class="`${menu.color}--text`" />
-                </v-layout>
-              </v-list-item>
-            </v-list>
-          </v-menu> -->
           <v-divider class="mr-4" vertical />
-          <v-btn
+          <div
             v-for="(menu, i) in menuActions"
-            :key="i"
-            @click="menuAction(menu.action, item)"
-            color="info"
-            icon>
-            <v-icon v-text="menu.icon" :color="menu.color" />
-          </v-btn>
+            :key="i">
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="menuAction(menu.action, item)"
+                  color="info"
+                  icon>
+                  <v-icon v-text="menu.icon" :color="menu.color" />
+                </v-btn>
+              </template>
+              <span v-text="menu.text" />
+            </v-tooltip>
+          </div>
         </v-layout>
         <div id="status"
           v-else-if="header.value === 'status'"
@@ -65,32 +43,47 @@
           v-else-if="header.value === 'createdAt'">
           <v-layout
             v-if="value"
-            class="text-no-wrap caption">
+            class="text-no-wrap caption py-2">
             <div
               class="text--secondary">
               <p v-text="'Dibuat'" class="mb-0" />
-              <p v-text="'Diedit'" class="text--secondary mb-0" />
+              <p v-if="item.editedAt" v-text="'Diedit'" class="text--secondary mb-0" />
             </div>
             <div
               class="font-weight-bold">
               <p v-text="`: ${ $options.filters.dayDate(value) }`" class="mb-0" />
-              <p v-text="`: ${ $options.filters.dayDate(item.editedAt) }`" class="mb-0" />
+              <p v-if="item.editedAt" v-text="`: ${ $options.filters.dayDate(item.editedAt) }`" class="mb-0" />
+            </div>
+          </v-layout>
+        </div>
+        <div id="subject"
+          v-else-if="header.value === 'subject'">
+          <v-layout
+            class="caption py-2"
+            column>
+            <div
+              class="text-no-wrap">
+              <span v-text="'No: '" class="text--secondary" />
+              <span v-text="item.no ? item.no : '-'" class="mb-0" />
+            </div>
+            <div
+              class="font-weight-bold">
+              <p v-text="value ? value : '-'" class="mb-0" />
             </div>
           </v-layout>
         </div>
         <div id="to"
           v-else-if="header.value === 'to'">
           <v-layout
-            v-if="value"
-            class="caption text-no-wrap">
+            class="caption text-no-wrap py-">
             <div>
               <p v-text="'Kepada'" class="mb-0" />
               <p v-text="'Dari'" class="mb-0" />
             </div>
             <div
               class="font-weight-bold">
-              <p v-text="`: ${ value }`" class="mb-0" />
-              <p v-text="`: ${ item.from }`" class="mb-0" />
+              <p v-text="value ? `: ${ value }` : '-'" class="mb-0" />
+              <p v-text="item.from ? `: ${ item.from }` : '-'" class="mb-0" />
             </div>
           </v-layout>
         </div>

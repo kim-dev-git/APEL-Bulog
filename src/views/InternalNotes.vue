@@ -1,11 +1,11 @@
 <template>
-  <div id="fax-in">
+  <div id="internal-notes">
     <content-body
-      title="Fax Masuk"
-      buttonText="Tambah Fax Masuk"
+      title="Nota Intern"
+      buttonText="Tambah Nota Intern"
       :headers="headers"
       :headersPrint="headersPrint"
-      :items="faxIns"
+      :items="internalNotes"
       :sortBy="'createdAt'"
       desc
       @button-click="dialogAdd = true" >
@@ -96,10 +96,10 @@
       v-model="dialogAdd"
       title="Tambah Fax Masuk"
       buttonSave="Simpan"
-      @save="createFaxIn()" >
+      @save="createInternalNotes()" >
 
       <form-generator
-        v-model="faxForms"
+        v-model="addForms"
         :forms="forms"
       />
     </content-dialog>
@@ -108,7 +108,7 @@
       v-model="dialogEdit"
       title="Edit Fax Masuk"
       buttonSave="Update"
-      @save="editFaxIn()" >
+      @save="editInternalNotes()" >
 
       <form-generator
         v-model="editForms"
@@ -121,7 +121,7 @@
       title="Yakin hapus Fax ini?"
       buttonText="Hapus"
       :remove="true"
-      @action="removeFaxIn()">
+      @action="removeInternalNotes()">
       <v-sheet id="dialog-detail"
         class="pa-4 mt-n4 mb-2"
         color="grey lighten-3"
@@ -152,7 +152,7 @@ import FormGenerator from '@/components/FormGenerator'
 import DialogConfirm from '@/components/DialogConfirm'
 
 export default {
-  name: 'FaxIn',
+  name: 'InternalNotes',
   components: {
     ContentBody,
     ContentDialog,
@@ -165,10 +165,6 @@ export default {
       // { text: 'Nomor', value: 'no' },
       // { text: 'Untuk', value: 'to' },
       { text: 'Tujuan', value: 'from' },
-      // { text: 'Asal Berita', value: 'origin' },
-      { text: 'Tembusan', value: 'copy' },
-      // { text: 'Jumlah Lembar', value: 'sheets', align: 'right' },
-      // { text: 'Status', value: 'status' },
       { text: 'Tanggal', value: 'createdAt' },
       { text: '', value: 'action', sortable: false },
     ],
@@ -186,18 +182,14 @@ export default {
     dialogAdd: false,
     dialogEdit: false,
     dialogRemove: false,
-    faxForms: {},
+    addForms: {},
     editForms: {},
     forms: [
-      { label: 'File Fax Masuk', type: 'file', value: 'file' },
+      { label: 'File Nota Intern', type: 'file', value: 'file' },
       { label: 'Nomor', type: 'text', value: 'no' },
       { label: 'Untuk', type: 'text', value: 'to' },
       { label: 'Dari', type: 'text', value: 'from' },
-      { label: 'Asal Berita', type: 'text', value: 'origin' },
-      { label: 'Tembusan', type: 'text', value: 'copy' },
-      { label: 'Hal', type: 'text', value: 'subject' },
-      { label: 'Jumlah Lembar', type: 'number', value: 'sheets' },
-      // { label: 'Tanggal Masuk', type: 'date', value: 'arrivedAt' },
+      { label: 'Perihal', type: 'text', value: 'subject' },
     ],
     menuActions: [
       { text: 'Download', icon: 'mdi-file-download-outline', color: 'success', action: 'download' },
@@ -206,23 +198,23 @@ export default {
     ],
   }),
   computed: {
-    faxIns() {
-      return this.$store.state.faxin.collection
+    internalNotes() {
+      return this.$store.state.internalnotes.collection
     }
   },
   methods: {
-    createFaxIn() {
-      this.$store.dispatch('faxin/post', this.faxForms)
+    createInternalNotes() {
+      this.$store.dispatch('internalnotes/post', this.addForms)
       this.dialogAdd = false
-      this.faxForms = {}
+      this.addForms = {}
     },
-    editFaxIn() {
-      this.$store.dispatch('faxin/put', this.editForms)
+    editInternalNotes() {
+      this.$store.dispatch('internalnotes/put', this.editForms)
       this.dialogEdit = false
       this.editForms = {}
     },
-    removeFaxIn() {
-      this.$store.dispatch('faxin/remove', this.editForms)
+    removeInternalNotes() {
+      this.$store.dispatch('internalnotes/remove', this.editForms)
       this.dialogRemove = false
       this.editForms = {}
     },

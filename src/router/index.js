@@ -53,6 +53,14 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/nota-intern',
+    name: 'InternalNotes',
+    component: lazyLoad('InternalNotes'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

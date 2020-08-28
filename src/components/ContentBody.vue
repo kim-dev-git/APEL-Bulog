@@ -30,6 +30,7 @@
         :headers="headers"
         :items="items"
         :sort-by="sortBy ? sortBy : 'id'"
+        :sort-desc="desc"
       >
         <template #body="props">
           <tbody>
@@ -76,6 +77,7 @@ export default {
     'headersPrint',
     'items',
     'sortBy',
+    'desc',
     'expand',
   ],
   data: () => ({

@@ -11,7 +11,6 @@ const mutations = {
   },
   removeNotification(state, notification) {
     var filtered = state.notifications.filter(n => { return n.id != notification.id })
-    console.log(filtered)
     state.notifications = filtered
   }
 }

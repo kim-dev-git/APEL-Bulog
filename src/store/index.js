@@ -5,6 +5,7 @@ import notifications from './modules/notifications'
 import user from './modules/user'
 import faxin from './modules/faxin'
 import faxout from './modules/faxout'
+import internalnotes from './modules/internalnotes'
 
 Vue.use(Vuex)
 
@@ -32,5 +33,6 @@ export default new Vuex.Store({
     user,
     faxin,
     faxout,
+    internalnotes,
   },
 })

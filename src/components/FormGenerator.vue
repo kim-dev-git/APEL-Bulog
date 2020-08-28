@@ -13,6 +13,7 @@ export default {
     'forms',
     'rules',
     'options',
+    'value',
   ],
   data: () => ({
     valid: null,
@@ -27,12 +28,23 @@ export default {
       const vm = this
       const forms = vm.forms
       const rules = vm.rules
+      var data = vm.input.data
+      const model = vm.value
       var inputForm = vm.input.forms
       var inputOption = vm.input.option
       var inputRule = vm.input.rules
 
+        
+      // data = JSON.parse(JSON.stringify(model))
+
       forms.forEach(form => {
         inputForm.push(form)
+        vm.$set(data, 'id', model.id)
+        vm.$set(data, 'fileExt', model.fileExt)
+        if(model[form.value]) {
+          vm.$set(data, form.value, model[form.value])
+        }
+        // console.log(data)
         if (form.type === 'combobox') {
           form.option = this.options[form.value]
         }
