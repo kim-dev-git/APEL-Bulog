@@ -72,8 +72,8 @@
             </div>
             <div
               class="font-weight-bold">
-              <p v-text="`: ${ $options.filters.fullDate(value.seconds) }`" class="mb-0" />
-              <p v-text="`: ${ $options.filters.fullDate(item.editedAt.seconds) }`" class="mb-0" />
+              <p v-text="`: ${ $options.filters.dayDate(value.seconds) }`" class="mb-0" />
+              <p v-text="`: ${ $options.filters.dayDate(item.editedAt.seconds) }`" class="mb-0" />
             </div>
           </v-layout>
         </div>

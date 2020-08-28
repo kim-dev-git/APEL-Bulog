@@ -7,6 +7,7 @@ import vuetify from './plugins/vuetify'
 import { auth } from './firebase'
 
 import './filters/fullDate'
+import './filters/dayDate'
 
 Vue.config.productionTip = false
 
