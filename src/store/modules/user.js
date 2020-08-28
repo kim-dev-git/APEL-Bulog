@@ -36,9 +36,13 @@ const actions = {
     router.push('/masuk')
   },
   async get({ commit }, user) {
+    commit('setLoading', 'get', { root: true })
+
     const userProfile = await ref.doc(user.uid).get()
 
     commit('setUserProfile', userProfile.data())
+    
+    commit('setLoading', null, { root: true })
 
     const currentRoute = router.history.current.path
 

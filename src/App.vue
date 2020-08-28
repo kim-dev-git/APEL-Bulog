@@ -1,5 +1,6 @@
 <template>
   <v-app class="base-bg">
+    <notification-list />
     <the-navigation-bar v-if="showNav" />
     <v-main class="mt-2">
       <v-container>
@@ -11,11 +12,13 @@
 
 <script>
 
+import NotificationList from './components/NotificationList'
 import TheNavigationBar from '@/components/TheNavigationBar'
 export default {
   name: 'App',
 
   components: {
+    NotificationList,
     TheNavigationBar,
   },
 

@@ -2,7 +2,7 @@
   <div id="fax-out-detail"
     class="mt-4">
     <v-layout
-      class="justify-center"
+      class="align-center pb-8"
       column>
 
       <v-card

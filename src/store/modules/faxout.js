@@ -20,7 +20,9 @@ const mutations = {
 }
 
 const actions = {
-  async post({  }, form) {
+  async post({ commit, dispatch }, form) {
+    
+    commit('setLoading', 'post', { root: true })
 
     form.status = "Menunggu persetujuan"
     form.createdAt = fb.Timestamp.fromDate(new Date())
@@ -37,16 +39,35 @@ const actions = {
 
     form.content = content
 
-    await ref.add(form)
+    await ref.add(form).then(() => {
+      dispatch('get')
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Fax berhasil ditambahkan.`,
+      }, { root: true })
+    }).catch(err => {
+      dispatch('notifications/post', {
+        title: `Fax gagal ditambahkan.`,
+        body: err,
+        timeout: 60
+      }, { root: true })
+      
+      commit('setLoading', null, { root: true })
+    })
 
   },
   async get({ commit, state }, id = null) {
+    commit('setLoading', 'get', { root: true })
+
     if(id) {
       state.document = null
       const query = await ref.doc(id).get()
       const object = query.data()
       object.id = id
       commit('setFaxOut', object)
+
+      commit('setLoading', null, { root: true })
     } else {
       const query = await ref.onSnapshot(snapshoot => {
         let array = []
@@ -59,25 +80,53 @@ const actions = {
         })
 
         commit('setFaxOuts', array)
+        commit('setLoading', null, { root: true })
       })
     }
   },
-  async put({  }, form) {
+  async put({ commit, dispatch }, form) {
+
+    commit('setLoading', 'post', { root: true })
 
     const id = form.id
     delete form.id
     
     form.editedAt = fb.Timestamp.fromDate(new Date())
 
-    await ref.doc(id).set(form, { merge: true })
+    await ref.doc(id).set(form, { merge: true }).then(() => {
+      dispatch('get', id)
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Fax berhasil diupdate.`,
+      }, { root: true })
+    }).catch(err => {
+      dispatch('notifications/post', {
+        title: `Fax gagal diupdate.`,
+        body: err,
+        timeout: 60
+      }, { root: true })
+      
+      commit('setLoading', null, { root: true })
+    })
 
   },
-  async remove({ dispatch }, fax) {
+  async remove({ commit, dispatch }, fax) {
+    commit('setLoading', 'post', { root: true })
+
     await ref.doc(fax.id).delete().then(function() {
-      // console.log(`Fax ${fax.id} dihapus.`)
       dispatch('get')
-    }).catch(function(error) {
-      console.error("Error removing document: ", error)
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Fax berhasil dihapus.`,
+      }, { root: true })
+    }).catch(err => {
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        title: 'Gagal menghapus fax.',
+        body: `${ err }.`,
+      }, { root: true })
     })
   }
 }
