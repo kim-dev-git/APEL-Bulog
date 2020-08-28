@@ -25,6 +25,7 @@ export default {
   }),
   methods: {
     print() {
+      var vm = this
       const item = JSON.parse(JSON.stringify(this.body))
       var doc = new jsPDF()
       const imgData = headerBulog
@@ -46,6 +47,11 @@ export default {
       this.headers.forEach(header => {
         const array = []
         array.push(header.header)
+        if(header.dataKey === 'createdAt') {
+          array.push(vm.$options.filters.fullDate(item[0][header.dataKey]))
+        } else {
+          array.push(item[0][header.dataKey])
+        }
         array.push(item[header.dataKey])
         body.push(array)
       })
@@ -66,7 +72,11 @@ export default {
       this.body.forEach(data => {
         const arr = []
         this.headers.forEach(header => {
-          arr.push(data[header.dataKey])
+          if(header.dataKey === 'createdAt') {
+            arr.push(vm.$options.filters.fullDate(data[header.dataKey]))
+          } else {
+            arr.push(data[header.dataKey])
+          }
         })
         items.push(arr)
       })
