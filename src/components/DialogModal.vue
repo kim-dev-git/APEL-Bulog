@@ -1,23 +1,26 @@
 <template>
-  <v-bottom-sheet
-    persistent
-    max-width="640"
-    v-model="active" >
-    <v-sheet>
+  <v-dialog
+    max-width="400"
+    v-model="active"
+    @input="active = !active">
+    <v-card class="pa-4">
       <slot />
-    </v-sheet>
-  </v-bottom-sheet>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 export default {
   props: [
-    'value',
+    'value'
   ],
   data: () => ({
     active: null
   }),
   methods: {
+    onRemove() {
+      this.$emit('remove')
+    }
   },
   watch: {
     active() {

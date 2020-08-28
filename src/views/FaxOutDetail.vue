@@ -33,245 +33,49 @@
       </v-card>
     </v-layout>
 
-    <dialog-sheet id="dialog-document-edit"
+    <dialog-document-edit id="dialog-document-edit"
       v-model="dialogDocumentEdit"
       :data="selectedField"
       :form="formDocumentEdit"
       @save="updateDocument()"
     />
 
-    <!-- <v-bottom-sheet id="dialog-document-edit"
-      persistent
-      max-width="640"
-      v-model="dialogDocumentEdit" >
-      <v-sheet>
-        <v-layout id="dialog-header"
-          class="align-center">
-          <v-card-title v-if="selectedField" v-text="selectedField.label" />
-          <v-spacer />
-          <v-btn
-            text
-            class="text-none"
-            @click="dialogDocumentEdit = false" >
-            <v-icon left v-text="'mdi-close'" />
-            Tutup
-          </v-btn>
-        </v-layout>
+    <dialog-content-edit id="dialog-content-edit"
+      v-model="dialogContentEdit"
+      :data="selectedField"
+      :form="formContentEdit"
+      @save="updateContent()"
+      @remove="dialogContentRemove = true"
+    />
 
-        <v-layout id="dialog-body"
-          class="px-4" >
-          <v-text-field
-            v-if="selectedField"
-            :type="selectedField.type"
-            outlined
-            v-model.trim="formDocumentEdit[selectedField.value]"
-          />
-        </v-layout>
+    <dialog-content-new id="dialog-content-new"
+      v-model="dialogContentNew"
+      :data="document"
+      :form="formContentEdit"
+      @save="updateContent()"
+    />
 
-        <v-layout id="dialog-action"
-          class="px-4 mt-n4 pb-4">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            class="text-none"
-            @click="updateDocument()" >
-            <span class="px-4" v-text="'Simpan'" />
-          </v-btn>
-        </v-layout>
-      </v-sheet>
-    </v-bottom-sheet> -->
+    <dialog-remove id="dialog-content-remove"
+      v-model="dialogContentRemove"
+      title="Yakin hapus list?"
+      @remove="removeContent()"
+    />
 
-    <v-bottom-sheet id="dialog-content-edit"
-      persistent
-      max-width="640"
-      v-model="dialogContentEdit" >
-      <v-sheet>
-        <v-layout id="dialog-header"
-          class="align-center">
-          <v-card-title v-if="selectedField !== null" v-text="getTitle()" />
-          <v-spacer />
-          <v-btn
-            v-if="Number.isInteger(selectedField)"
-            text
-            color="error"
-            class="text-none"
-            @click="dialogContentRemove = true" >
-            <v-icon left v-text="'mdi-delete-outline'" />
-            Hapus
-          </v-btn>
-          <v-btn
-            text
-            class="text-none"
-            @click="dialogContentEdit = false" >
-            <v-icon left v-text="'mdi-close'" />
-            Tutup
-          </v-btn>
-        </v-layout>
+    <dialog-comment-new id="dialog-comment-new"
+      v-if="document && document.content"
+      v-model="dialogCommentNew"
+      :data="selectedField"
+      :form="formCommentNew"
+      @save="createComment()"
+      @update="formCommentNew = $event"
+    />
 
-        <v-layout id="dialog-body"
-          class="px-4" >
-          <v-textarea
-            v-if="formContentEdit && formContentEdit.content && dialogContentEdit && !Number.isInteger(selectedField)"
-            outlined
-            auto-grow
-            v-model="formContentEdit.content[selectedField]"
-          />
+    <dialog-remove id="dialog-comment-remove"
+      v-model="dialogCommentRemove"
+      title="Yakin hapus komentar?"
+      @remove="removeComment()"
+    />
 
-          <v-textarea
-            v-if="formContentEdit && formContentEdit.content && dialogContentEdit && Number.isInteger(selectedField)"
-            outlined
-            auto-grow
-            v-model="formContentEdit.content.list[selectedField]"
-          />
-        </v-layout>
-
-        <v-layout id="dialog-action"
-          class="px-4 mt-n4 pb-4">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            class="text-none"
-            @click="updateContent()" >
-            <span class="px-4" v-text="'Simpan'" />
-          </v-btn>
-        </v-layout>
-      </v-sheet>
-    </v-bottom-sheet>
-    
-    <v-bottom-sheet id="dialog-content-new"
-      persistent
-      max-width="640"
-      v-model="dialogContentNew" >
-      <v-sheet>
-        <v-layout id="dialog-header"
-          v-if="document && document.content"
-          class="align-center">
-          <v-card-title v-text="'List Ke-' + (document.content.list.length + 1)" />
-          <v-spacer />
-          <v-btn
-            text
-            class="text-none"
-            @click="dialogContentNew = false" >
-            <v-icon left v-text="'mdi-close'" />
-            Tutup
-          </v-btn>
-        </v-layout>
-
-        <v-layout id="dialog-body"
-          class="px-4" >
-          <v-textarea
-            v-if="formContentEdit && formContentEdit.content"
-            outlined
-            auto-grow
-            v-model="formContentEdit.content.list[document.content.list.length]"
-          />
-        </v-layout>
-
-        <v-layout id="dialog-action"
-          class="px-4 mt-n4 pb-4">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            class="text-none"
-            @click="updateContent()" >
-            <span class="px-4" v-text="'Simpan'" />
-          </v-btn>
-        </v-layout>
-      </v-sheet>
-    </v-bottom-sheet>
-
-    <v-dialog id="dialog-content-remove"
-      max-width="400"
-      v-model="dialogContentRemove">
-      <v-card class="pa-4">
-        <v-card-text>
-          Yakin hapus data?
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
-            color="grey"
-            class="text-none"
-            @click="dialogContentRemove = false" >
-            <span class="mx-4" v-text="'Batal'" />
-          </v-btn>
-          <v-btn
-            color="error"
-            class="text-none"
-            @click="removeContent()" >
-            <span class="mx-4" v-text="'Hapus'" />
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    
-    <v-bottom-sheet id="dialog-comment-add"
-      persistent
-      max-width="640"
-      v-model="dialogCommentNew" >
-      <v-sheet>
-        <v-layout id="dialog-header"
-          v-if="document && document.content"
-          class="align-center">
-          <v-card-title v-text="Number.isInteger(selectedField) ? ('Tambahkan Komentar ke list-' + (selectedField + 1)) : 'Tambahkan Komentar ke ' + selectedField" />
-          <v-spacer />
-          <v-btn
-            text
-            class="text-none"
-            @click="dialogCommentNew = false" >
-            <v-icon left v-text="'mdi-close'" />
-            Tutup
-          </v-btn>
-        </v-layout>
-
-        <v-layout id="dialog-body"
-          class="px-4" >
-          <v-textarea
-            outlined
-            auto-grow
-            v-model="formCommentNew"
-          />
-        </v-layout>
-
-        <v-layout id="dialog-action"
-          class="px-4 mt-n4 pb-4">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            class="text-none"
-            @click="createComment()" >
-            <span class="px-4" v-text="'Simpan'" />
-          </v-btn>
-        </v-layout>
-      </v-sheet>
-    </v-bottom-sheet>
-
-    <v-dialog id="dialog-comment-remove"
-      max-width="400"
-      v-model="dialogCommentRemove">
-      <v-card class="pa-4">
-        <v-card-text>
-          Yakin hapus komentar?
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            text
-            color="grey"
-            class="text-none"
-            @click="dialogCommentRemove = false" >
-            <span class="mx-4" v-text="'Batal'" />
-          </v-btn>
-          <v-btn
-            color="error"
-            class="text-none"
-            @click="removeComment()" >
-            <span class="mx-4" v-text="'Hapus'" />
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -281,14 +85,22 @@ import EditorHeader from '@/components/EditorHeader'
 import EditorBody from '@/components/EditorBody'
 import EditorComment from '@/components/EditorComment'
 import PrintDocument from '@/components/PrintDocument'
-import DialogSheet from '@/components/DialogSheet'
+import DialogDocumentEdit from '@/components/DialogDocumentEdit'
+import DialogContentNew from '@/components/DialogContentNew'
+import DialogContentEdit from '@/components/DialogContentEdit'
+import DialogCommentNew from '@/components/DialogCommentNew'
+import DialogRemove from '@/components/DialogRemove'
 export default {
   components: {
     EditorHeader,
     EditorBody,
     EditorComment,
     PrintDocument,
-    DialogSheet,
+    DialogDocumentEdit,
+    DialogContentNew,
+    DialogContentEdit,
+    DialogCommentNew,
+    DialogRemove,
   },
   props: [ 'id' ],
   data: () => ({
@@ -367,7 +179,7 @@ export default {
       this.selectedField = value
       this.dialogContentRemove = true
     },
-    async removeContent() {
+    removeContent() {
       this.formContentEdit = JSON.parse(JSON.stringify(this.document))
       let data = this.formContentEdit
 
@@ -405,15 +217,10 @@ export default {
       data.notes[field] = null
       this.commentsActive[field] = false
       this.updateContent()
+      this.dialogCommentRemove = false
+      this.formCommentNew = null
     },
-    getTitle() {
-      const val = this.selectedField
-      if (val === 'body') {
-        return 'Isi Berita'
-      } else {
-        return `List Ke-${ val + 1 }`
-      }
-    },
+    
   },
   async mounted() {
     await this.$store.dispatch('faxout/get', this.id)
