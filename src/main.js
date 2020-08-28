@@ -6,6 +6,8 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import { auth } from './firebase'
 
+import './filters/fullDate'
+
 Vue.config.productionTip = false
 
 let app

@@ -60,6 +60,39 @@
           <v-icon v-text="statusIcon(value)" :color="statusColor(value)" small left />
           <span v-text="value" class="caption font-weight-bold" :class="`${statusColor(value)}--text`"  />
         </div>
+        <div id="createdAt"
+          v-else-if="header.value === 'createdAt'">
+          <v-layout
+            v-if="value"
+            class="text-no-wrap caption">
+            <div
+              class="text--secondary">
+              <p v-text="'Dibuat'" class="mb-0" />
+              <p v-text="'Diedit'" class="text--secondary mb-0" />
+            </div>
+            <div
+              class="font-weight-bold">
+              <p v-text="`: ${ $options.filters.fullDate(value.seconds) }`" class="mb-0" />
+              <p v-text="`: ${ $options.filters.fullDate(item.editedAt.seconds) }`" class="mb-0" />
+            </div>
+          </v-layout>
+        </div>
+        <div id="to"
+          v-else-if="header.value === 'to'">
+          <v-layout
+            v-if="value"
+            class="caption text-no-wrap">
+            <div>
+              <p v-text="'Kepada'" class="mb-0" />
+              <p v-text="'Dari'" class="mb-0" />
+            </div>
+            <div
+              class="font-weight-bold">
+              <p v-text="`: ${ value }`" class="mb-0" />
+              <p v-text="`: ${ item.from }`" class="mb-0" />
+            </div>
+          </v-layout>
+        </div>
         <p
           v-else
           v-text="value"
@@ -127,13 +160,13 @@ export default {
     headers: [
       // { text: 'Nomor', value: 'no' },
       { text: 'Perihal', value: 'subject' },
-      { text: 'Kepada', value: 'to' },
-      { text: 'Dari', value: 'from' },
+      { text: 'Tujuan', value: 'to' },
+      // { text: 'Dari', value: 'from' },
       // { text: 'Asal Berita', value: 'origin' },
       // { text: 'Jumlah Lembar', value: 'sheets', align: 'right' },
       { text: 'Tanggal', value: 'createdAt' },
       { text: 'Status', value: 'status' },
-      { text: '', value: 'action' },
+      { text: '', value: 'action', sortable: false },
     ],
     headersPrint: [
       { header: 'Nomor', dataKey: 'no' },
