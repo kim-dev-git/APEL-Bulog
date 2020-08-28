@@ -29,6 +29,7 @@
         :mobile-breakpoint="Number(0)"
         :headers="headers"
         :items="items"
+        :sort-by="sortBy ? sortBy : 'id'"
       >
         <template #body="props">
           <tbody>
@@ -74,6 +75,7 @@ export default {
     'headers',
     'headersPrint',
     'items',
+    'sortBy',
     'expand',
   ],
   data: () => ({

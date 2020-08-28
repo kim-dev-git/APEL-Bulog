@@ -3,5 +3,9 @@ import moment from 'moment'
 
 Vue.filter("dayDate", value => {
   moment.locale('id')
-  return moment.unix(value).format('dddd, D MMM')
+  if(value && value.seconds) {
+    return moment.unix(value.seconds).format('dddd, D MMM')
+  } else {
+    return moment(value).format('dddd, D MMM')
+  }
 })

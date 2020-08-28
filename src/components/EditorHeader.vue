@@ -11,6 +11,7 @@
         </v-list-item-content>
         <v-list-item-action>
           <p class="mb-0 body-2" v-if="document && document[form.value]" v-text="document[form.value]" />
+          <p class="mb-0 body-2 font-weight-bold" v-else v-text="`-`" />
         </v-list-item-action>
       </v-list-item>
     </v-list-item-group>

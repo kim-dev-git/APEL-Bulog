@@ -10,12 +10,14 @@
         class="pa-4 mb-4"
         width="600">
         <v-layout id="print-document"
-          v-if="document && document.status === 'Telah direvisi'"
+          v-if="document"
           class="mb-3">
           <v-spacer />
           <v-btn
+            v-if="document.status === 'Telah direvisi'"
             color="success"
-            class="mr-2">
+            class="mr-2"
+            @click="dialogPrintedDcoument = true">
             <v-icon v-text="'mdi-check'" class="ml-0" left />
             <span v-text="'Telah Di Cetak'" class="mr-2 text-none" />
           </v-btn>
@@ -103,6 +105,13 @@
       @remove="removeComment()"
     />
 
+    <dialog-confirm id="dialog-comment-remove"
+      v-model="dialogPrintedDcoument"
+      title="Fax sudah di cetak?"
+      buttonText="Sudah"
+      @action="printedDocument()"
+    />
+
   </div>
 </template>
 
@@ -117,6 +126,7 @@ import DialogContentNew from '@/components/DialogContentNew'
 import DialogContentEdit from '@/components/DialogContentEdit'
 import DialogCommentNew from '@/components/DialogCommentNew'
 import DialogRemove from '@/components/DialogRemove'
+import DialogConfirm from '@/components/DialogConfirm'
 export default {
   components: {
     EditorHeader,
@@ -128,6 +138,7 @@ export default {
     DialogContentEdit,
     DialogCommentNew,
     DialogRemove,
+    DialogConfirm,
   },
   props: [ 'id' ],
   data: () => ({
@@ -154,6 +165,7 @@ export default {
     dialogContentRemove: false,
     dialogCommentNew: false,
     dialogCommentRemove: false,
+    dialogPrintedDcoument: false,
     formDocumentEdit: {},
     formContentEdit: {},
     commentsActive: {},
@@ -182,7 +194,7 @@ export default {
     },
     updateDocument() {
       this.$store.dispatch('faxout/put', this.formDocumentEdit)
-      this.$store.dispatch('faxout/get', this.id)
+      // this.$store.dispatch('faxout/get', this.id)
       this.dialogDocumentEdit = false
     },
     editContent(value) {
@@ -195,7 +207,7 @@ export default {
     },
     updateContent() {
       this.$store.dispatch('faxout/put', this.formContentEdit)
-      this.$store.dispatch('faxout/get', this.id)
+      // this.$store.dispatch('faxout/get', this.id)
       this.selectedField = null
       this.dialogContentEdit = false
       this.dialogContentNew = false
@@ -255,6 +267,12 @@ export default {
       this.dialogCommentRemove = false
       this.formCommentNew = null
     },
+    printedDocument() {
+      var data = JSON.parse(JSON.stringify(this.document))
+      data.status = 'Sudah diprint'
+      this.$store.dispatch('faxout/put', data)
+      this.dialogPrintedDcoument = false
+    }
     
   },
   async mounted() {

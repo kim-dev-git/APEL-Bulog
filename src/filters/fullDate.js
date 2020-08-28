@@ -1,7 +1,12 @@
 import Vue from 'vue'
 import moment from 'moment'
+('DD MMMM YYYY')
 
-Vue.filter("fullDate", value => {
+Vue.filter("dayDate", value => {
   moment.locale('id')
-  return moment.unix(value).format('DD MMMM YYYY')
+  if(value.seconds) {
+    return moment.unix(value.seconds).format('DD MMMM YYYY')
+  } else {
+    return moment(value).format('DD MMMM YYYY')
+  }
 })

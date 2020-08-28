@@ -1,6 +1,8 @@
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/storage'
+import 'firebase/messaging'
 
 // firebase init - add your own config here
 const firebaseConfig = {
@@ -16,13 +18,24 @@ firebase.initializeApp(firebaseConfig)
 
 // utils
 const db = firebase.firestore()
+// db.settings({ experimentalForceLongPolling: true })
 const auth = firebase.auth()
-const { Timestamp, GeoPoint } = firebase.firestore
+const storage = firebase.storage()
+const RecaptchaVerifier = firebase.auth.RecaptchaVerifier
+const increment = firebase.firestore.FieldValue.increment
+const { Timestamp } = firebase.firestore
+const messaging = firebase.messaging()
+
+// Offline support
+db.enablePersistence()
 
 // export utils/refs
 export {
   db,
   auth,
+  storage,
+  messaging,
+  RecaptchaVerifier,
   Timestamp,
-  GeoPoint
+  increment
 }

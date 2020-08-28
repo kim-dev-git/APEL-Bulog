@@ -6,6 +6,7 @@
       :headers="headers"
       :headersPrint="headersPrint"
       :items="faxOutCollection"
+      :sortBy="'createdAt'"
       @button-click="dialogAdd = true"
       expand >
 
@@ -72,8 +73,8 @@
             </div>
             <div
               class="font-weight-bold">
-              <p v-text="`: ${ $options.filters.dayDate(value.seconds) }`" class="mb-0" />
-              <p v-text="`: ${ $options.filters.dayDate(item.editedAt.seconds) }`" class="mb-0" />
+              <p v-text="`: ${ $options.filters.dayDate(value) }`" class="mb-0" />
+              <p v-text="`: ${ $options.filters.dayDate(item.editedAt) }`" class="mb-0" />
             </div>
           </v-layout>
         </div>
@@ -211,6 +212,9 @@ export default {
         case 'Telah direvisi':
           return 'mdi-comment-check'
           break
+        case 'Sudah diprint':
+          return 'mdi-printer'
+          break
         default:
           return
           break
@@ -226,6 +230,9 @@ export default {
           break
         case 'Telah direvisi':
           return 'success'
+          break
+        case 'Sudah diprint':
+          return 'grey'
           break
         default:
           return
