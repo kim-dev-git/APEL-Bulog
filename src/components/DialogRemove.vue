@@ -1,7 +1,10 @@
 <template>
   <dialog-modal
     v-model="active">
-    <v-card-text v-text="title" />
+    <v-card-text v-text="title" class="ml-n4 subtitle-1" />
+
+    <slot />
+    
     <v-card-actions>
       <v-spacer />
       <v-btn

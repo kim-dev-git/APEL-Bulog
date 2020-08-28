@@ -57,6 +57,7 @@
           </v-list-item>
 
           <v-btn
+            v-if="userProfile && userProfile.position !== 'Pimwil'"
             color="info"
             class="editor-button"
             @click="onAddBody(document.content.list.length)" >
@@ -104,6 +105,11 @@ export default {
     'document',
     'commentsActive',
   ],
+  computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    }
+  },
   methods: {
     onAddBody(val) {
       this.$emit('add-body', val)
@@ -120,7 +126,7 @@ export default {
     onRemoveComment(val) {
       this.$emit('remove-comment', val)
     },
-  }
+  },
 }
 </script>
 

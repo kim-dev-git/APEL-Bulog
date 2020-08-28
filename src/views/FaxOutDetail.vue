@@ -2,15 +2,42 @@
   <div id="fax-out-detail"
     class="mt-4">
     <v-layout
-      class="justify-center">
+      class="justify-center"
+      column>
+
+      <v-card
+        v-if="userProfile && userProfile.position === 'TU'"
+        class="pa-4 mb-4"
+        width="600">
+        <v-layout id="print-document"
+          v-if="document && document.status === 'Telah direvisi'"
+          class="mb-3">
+          <v-spacer />
+          <v-btn
+            color="success"
+            class="mr-2">
+            <v-icon v-text="'mdi-check'" class="ml-0" left />
+            <span v-text="'Telah Di Cetak'" class="mr-2 text-none" />
+          </v-btn>
+          <print-document :headers="headers" :body="document" />
+        </v-layout>
+
+        <v-layout id="tool-tip"
+          v-if="userProfile && userProfile.position === 'TU'"
+          column>
+          <v-sheet
+            class="pa-2 px-4 mx-n4"
+            color="info"
+            dark>
+            <v-icon v-text="'mdi-information-outline'" left />
+            <span v-text="'Klik teks untuk mengedit'" />
+          </v-sheet>
+        </v-layout>
+      </v-card>
 
       <v-card
         class="pa-4"
         width="600">
-        <v-layout id="print-document">
-          <v-spacer />
-          <print-document :headers="headers" :body="document" />
-        </v-layout>
 
         <editor-header
           :forms="forms"
@@ -135,6 +162,9 @@ export default {
   computed: {
     document() {
       return this.$store.state.faxout.document
+    },
+    userProfile() {
+      return this.$store.state.user.userProfile
     }
   },
   methods: {
@@ -146,6 +176,7 @@ export default {
         }
       })
       this.formDocumentEdit = JSON.parse(JSON.stringify(this.document))
+      // this.formDocumentEdit.status = 'Sudah direvisi'
       this.dialogDocumentEdit = true
 
     },
@@ -156,6 +187,9 @@ export default {
     },
     editContent(value) {
       this.formContentEdit = JSON.parse(JSON.stringify(this.document))
+      if(this.formContentEdit.status !== 'Menunggu persetujuan') {
+        this.formContentEdit.status = 'Telah direvisi'
+      }
       this.selectedField = value
       this.dialogContentEdit = true
     },
@@ -206,6 +240,7 @@ export default {
         }
         data.notes = notes
       }
+      data.status = 'Perlu diperbaiki'
       this.updateContent()
       this.commentsActive[field] = true
 

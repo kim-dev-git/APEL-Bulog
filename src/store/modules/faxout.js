@@ -22,7 +22,7 @@ const mutations = {
 const actions = {
   async post({  }, form) {
 
-    form.status = "Menunggu Persetujuan"
+    form.status = "Menunggu persetujuan"
     form.createdAt = fb.Timestamp.fromDate(new Date())
 
     const list = [
@@ -40,8 +40,9 @@ const actions = {
     await ref.add(form)
 
   },
-  async get({ commit }, id = null) {
+  async get({ commit, state }, id = null) {
     if(id) {
+      state.document = null
       const query = await ref.doc(id).get()
       const object = query.data()
       object.id = id
@@ -65,13 +66,20 @@ const actions = {
 
     const id = form.id
     delete form.id
-
-    form.status = "Telah direvisi"
+    
     form.editedAt = fb.Timestamp.fromDate(new Date())
 
     await ref.doc(id).set(form, { merge: true })
 
   },
+  async remove({ dispatch }, fax) {
+    await ref.doc(fax.id).delete().then(function() {
+      // console.log(`Fax ${fax.id} dihapus.`)
+      dispatch('get')
+    }).catch(function(error) {
+      console.error("Error removing document: ", error)
+    })
+  }
 }
 
 

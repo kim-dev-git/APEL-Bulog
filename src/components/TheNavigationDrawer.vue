@@ -2,6 +2,7 @@
   <v-navigation-drawer
     app
     dark
+    :mini-variant="$vuetify.breakpoint.sm"
     :permanent="$vuetify.breakpoint.smAndUp"
     class="base-dark-bg"
     v-model="active" >
@@ -10,9 +11,12 @@
       <v-list-item-content>
         <v-layout>
         
-        <v-app-bar-nav-icon v-if="!$vuetify.breakpoint.smAndUp"class="mr-4 ml-n1" @click="active = !active" />
+        <v-app-bar-nav-icon v-if="!$vuetify.breakpoint.smAndUp" class="mr-4 ml-n1" @click="active = !active" />
 
-        <v-list-item-title class="title" v-text="'APEL-Bulog'" />
+        <v-list-item-title v-if="!$vuetify.breakpoint.sm" class="title" v-text="'APEL-Bulog'" />
+
+        <img v-else src="../assets/logo.png" width="24" />
+
       </v-layout>
       </v-list-item-content>
     </v-list-item>
@@ -29,18 +33,41 @@
         :to="item.link"
         link
       >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
+        <v-tooltip right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-list-item-icon
+              v-bind="attrs"
+              v-on="on">
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
 
-        <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item-content>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <span v-text="item.title" />
+
+        </v-tooltip>
       </v-list-item>
     </v-list>
     <template #append>
       <v-layout column class="pa-4">
-        <v-btn outlined color="error" class="text-none" @click="signOut()">Keluar</v-btn>
+        <v-btn v-if="!$vuetify.breakpoint.sm" outlined color="error" class="text-none" @click="signOut()">Keluar</v-btn>
+
+        <v-tooltip right v-else>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="ml-n1 error"
+              color="white"
+              icon>
+              <v-icon @click="signOut()" v-text="'mdi-logout'" />
+            </v-btn>
+          </template>
+          <span v-text="'Keluar'" />
+        </v-tooltip>
       </v-layout>
     </template>
   </v-navigation-drawer>

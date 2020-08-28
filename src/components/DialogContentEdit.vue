@@ -6,7 +6,7 @@
       <v-card-title v-if="data !== null" v-text="getTitle()" />
       <v-spacer />
       <v-btn
-        v-if="Number.isInteger(data)"
+        v-if="Number.isInteger(data) && userProfile && userProfile.position !== 'Pimwil'"
         text
         color="error"
         class="text-none"
@@ -31,6 +31,7 @@
         auto-grow
         autofocus
         v-model="form.content[data]"
+        :readonly="userProfile.position === 'Pimwil'"
       />
 
       <v-textarea
@@ -39,6 +40,7 @@
         auto-grow
         autofocus
         v-model="form.content.list[data]"
+        :readonly="userProfile.position === 'Pimwil'"
       />
     </v-layout>
 
@@ -46,6 +48,7 @@
       class="px-4 mt-n4 pb-4">
       <v-spacer />
       <v-btn
+        v-if="userProfile && userProfile.position !== 'Pimwil'"
         color="primary"
         class="text-none"
         @click="onSave()" >
@@ -70,6 +73,11 @@ export default {
   data: () => ({
     active: null
   }),
+  computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    }
+  },
   methods: {
     onSave() {
       this.$emit('save')

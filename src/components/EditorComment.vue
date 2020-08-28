@@ -5,14 +5,14 @@
       icon
       class="editor-notes"
       @click.stop="$emit('input', !value)" >
-      <v-icon v-text="'mdi-comment-alert'" />
+      <v-icon v-text="'mdi-comment-alert'" color="warning" />
     </v-btn>
     <v-btn
       v-if="!text && userProfile && userProfile.position === 'Pimwil'"
       icon
       class="editor-notes"
       @click.stop="$emit('add')" >
-      <v-icon v-text="'mdi-comment-edit'" />
+      <v-icon v-text="'mdi-comment-edit'" color="info" />
     </v-btn>
     <v-card
       v-if="value"

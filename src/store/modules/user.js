@@ -6,9 +6,7 @@ const END_POINT = 'users'
 const ref = fb.db.collection(END_POINT)
 
 const state = {
-  userProfile: {
-    displayName: 'Admin'
-  }
+  userProfile: {}
 }
 
 const mutations = {

@@ -39,11 +39,15 @@
                 :value="item[header.value]"
                 :header="header">
                 <p
+                  class="py-4"
                   :class="header.align ? `text-${ header.align } mb-0` : 'mb-0'"
                   v-text="item[header.value]"
                 />
               </slot>
             </td>
+            <slot name="expanded">
+              <v-layout v-if="item.expanded">{{ item.status }}</v-layout>
+            </slot>
           </tr>
           </tbody>
         </template>
@@ -70,8 +74,10 @@ export default {
     'headers',
     'headersPrint',
     'items',
+    'expand',
   ],
   data: () => ({
+    expanded: []
   }),
   computed: {
     userProfile() {

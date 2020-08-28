@@ -19,8 +19,9 @@
       <v-text-field
         v-if="data"
         :type="data.type"
-        outlined
         v-model.trim="form[data.value]"
+        :readonly="userProfile.position === 'Pimwil'"
+        outlined
         autofocus
       />
     </v-layout>
@@ -29,6 +30,7 @@
       class="px-4 mt-n4 pb-4">
       <v-spacer />
       <v-btn
+        v-if="userProfile && userProfile.position !== 'Pimwil'"
         color="primary"
         class="text-none"
         @click="onSave()" >
@@ -53,6 +55,11 @@ export default {
   data: () => ({
     active: null
   }),
+  computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    }
+  },
   methods: {
     onSave() {
       this.$emit('save')
