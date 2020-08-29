@@ -1,11 +1,11 @@
 <template>
-  <div id="fax-out">
+  <div id="mail-out">
     <content-body
-      title="Fax Keluar"
-      buttonText="Tambah Fax Keluar"
+      title="Mail Keluar"
+      buttonText="Tambah Mail Keluar"
       :headers="headers"
       :headersPrint="headersPrint"
-      :items="faxOutCollection"
+      :items="mailOutCollection"
       :sortBy="'createdAt'"
       desc
       @button-click="dialogAdd = true"
@@ -98,37 +98,37 @@
     
     <content-dialog
       v-model="dialogAdd"
-      title="Tambah Fax Keluar"
+      title="Tambah Mail Keluar"
       buttonSave="Simpan"
-      @save="createFaxOut()" >
+      @save="createMailOut()" >
 
       <form-generator
-        v-model="faxForms"
+        v-model="addForms"
         :forms="forms"
       />
 
     </content-dialog>
 
-    <dialog-remove id="dialog-fax-out-remove"
-      v-model="dialogFaxOutRemove"
-      title="Yakin hapus Fax ini?"
-      @remove="removeFaxOut()">
+    <dialog-remove id="dialog-mail-out-remove"
+      v-model="dialogMailOutRemove"
+      title="Yakin hapus Mail ini?"
+      @remove="removeMailOut()">
       <v-sheet id="dialog-detail"
         class="pa-4 mt-n4 mb-2"
         color="grey lighten-3"
         rounded>
         <v-layout
-          v-if="selectedFax"
+          v-if="selectedMail"
           column>
-          <span v-text="'No Fax'" class="text--secondary subtitle-2" />
-          <span v-if="selectedFax.no" v-text="selectedFax.no" class="font-weight-bold" />
+          <span v-text="'No Surat'" class="text--secondary subtitle-2" />
+          <span v-if="selectedMail.no" v-text="selectedMail.no" class="font-weight-bold" />
           <span v-else v-text="'-'" class="font-weight-bold" />
           <v-divider class="my-2" />
           <span v-text="'Perihal'" class="text--secondary subtitle-2" />
-          <span v-text="selectedFax.subject" class="font-weight-bold" />
+          <span v-text="selectedMail.subject" class="font-weight-bold" />
           <v-divider class="my-2" />
           <span v-text="'Kepada'" class="text--secondary subtitle-2" />
-          <span v-text="selectedFax.to" class="font-weight-bold" />
+          <span v-text="selectedMail.to" class="font-weight-bold" />
         </v-layout>
       </v-sheet>
     </dialog-remove>
@@ -143,7 +143,7 @@ import FormGenerator from '@/components/FormGenerator'
 import DialogRemove from '@/components/DialogRemove'
 
 export default {
-  name: 'FaxOut',
+  name: 'MailOut',
   components: {
     ContentBody,
     ContentDialog,
@@ -172,9 +172,9 @@ export default {
       { header: 'Status', dataKey: 'status' },
     ],
     dialogAdd: false,
-    dialogFaxOutRemove: false,
-    selectedFax: null,
-    faxForms: {},
+    dialogMailOutRemove: false,
+    selectedMail: null,
+    addForms: {},
     forms: [
       { label: 'Nomor', type: 'text', value: 'no' },
       { label: 'Kepada', type: 'text', value: 'to' },
@@ -189,8 +189,8 @@ export default {
     ],
   }),
   computed: {
-    faxOutCollection() {
-      return this.$store.state.faxout.collection
+    mailOutCollection() {
+      return this.$store.state.mailout.collection
     }
   },
   methods: {
@@ -244,31 +244,32 @@ export default {
           this.documentDetail(item)
           break
         case 'delete':
-          this.selectedFax = item
-          this.dialogFaxOutRemove = true
+          this.selectedMail = item
+          this.dialogMailOutRemove = true
           break
         default:
           break
       }
     },
-    createFaxOut() {
-      this.$store.dispatch('faxout/post', this.faxForms)
+    createMailOut() {
+      this.$store.dispatch('mailout/post', this.addForms)
+      console.log('Console:', this.addForms)
       this.dialogAdd = false
-      this.faxForms = {}
+      this.addForms = {}
     },
-    removeFaxOut() {
-      this.$store.dispatch('faxout/remove', this.selectedFax)
-      this.dialogFaxOutRemove = false
+    removeMailOut() {
+      this.$store.dispatch('mailout/remove', this.selectedMail)
+      this.dialogMailOutRemove = false
     },
     documentDetail(item) {
-      // this.$store.dispatch('faxout/get', item.id)
-      this.$router.push(`/fax-keluar/${ item.id }`)
+      // this.$store.dispatch('mailout/get', item.id)
+      this.$router.push(`/surat-keluar/${ item.id }`)
     },
   },
   watch: {
-    dialogFaxOutRemove(val) {
+    dialogMailOutRemove(val) {
       if(!val) {
-        this.selectedFax = null
+        this.selectedMail = null
       }
     }
   }

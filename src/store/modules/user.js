@@ -17,7 +17,38 @@ const mutations = {
 
 const actions = {
   async signin({ dispatch }, form) {
-    const { user } = await fb.auth.signInWithEmailAndPassword(form.username + '@gmail.com', form.password)
+
+    const { user } = await fb.auth.signInWithEmailAndPassword(form.username + '@gmail.com', form.password).catch(error => {
+      
+      var errorCode = error.code
+      var errorMessage = error.message
+
+      switch(errorCode) {
+        case 'auth/wrong-password':
+          errorMessage = 'Password salah'
+          break
+        case 'auth/invalid-email':
+          errorMessage = 'Username tidak valid'
+          break
+        case 'auth/user-disabled':
+          errorMessage = 'Username telah dibekukan'
+          break
+        case 'auth/user-not-found':
+          errorMessage = 'Username tidak terdaftar'
+          break
+        default:
+          break
+      }
+
+      dispatch('notifications/post', {
+        title: 'Login Gagal.',
+        body: `${ errorMessage }.`,
+        timeout: 60
+      }, { root: true })
+
+      return
+      
+    })
     dispatch('get', user)
   },
   async signup({ dispatch }, form) {

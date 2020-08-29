@@ -4,7 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import { auth } from './firebase'
+import { auth, messaging } from './firebase'
 
 import './filters/fullDate'
 import './filters/dayDate'
@@ -21,8 +21,12 @@ auth.onAuthStateChanged((user) => {
       render: h => h(App)
     }).$mount('#app')
   }
+
   if (user) {
+
     store.dispatch('user/get', user)
+    store.dispatch('mailin/get')
+    store.dispatch('mailout/get')
     store.dispatch('faxin/get')
     store.dispatch('faxout/get')
     store.dispatch('internalnotes/get')

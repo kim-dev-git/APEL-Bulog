@@ -1,7 +1,7 @@
-import { db } from '@/firebase'
+import * as fb from '@/firebase'
 
-const END_POINT = 'faxIn'
-const ref = db.collection(END_POINT)
+const END_POINT = 'mailIn'
+const ref = fb.db.collection(END_POINT)
 
 const state = {
   collection: [],
@@ -9,10 +9,10 @@ const state = {
 }
 
 const mutations = {
-  setFaxIns(state, val) {
+  setMailIns(state, val) {
     state.collection = val
   },
-  setFaxIn(state, val) {
+  setMailIn(state, val) {
     state.document = val
   },
 }
@@ -27,7 +27,7 @@ const actions = {
 
     if(form.file){
       var file = form.file
-      var storageRef = await storage.ref('fax-in/' + id + '.' + file.name.split('.').pop());
+      var storageRef = await fb.storage.ref('mail-in/' + id + '.' + file.name.split('.').pop());
       var task = storageRef.put(file)
       task.on('state_changed', snapshot => {
         var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100).toFixed(0)
@@ -58,18 +58,18 @@ const actions = {
           delete form.file
 
           form.status = "Baru masuk"
-          form.createdAt = Timestamp.fromDate(new Date())
+          form.createdAt = fb.Timestamp.fromDate(new Date())
           
           await ref.doc(id).set(form).then(() => {
             dispatch('get')
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
-              body: `Fax berhasil ditambahkan.`,
+              body: `Surat berhasil ditambahkan.`,
             }, { root: true })
           }).catch(err => {
             dispatch('notifications/post', {
-              title: `Fax gagal ditambahkan.`,
+              title: `Surat gagal ditambahkan.`,
               body: err,
               timeout: 60
             }, { root: true })
@@ -88,7 +88,7 @@ const actions = {
       const query = await ref.doc(id).get()
       const object = query.data()
       object.id = id
-      commit('setFaxIn', object)
+      commit('setMailIn', object)
     } else {
       const query = await ref.onSnapshot(snapshoot => {
         let array = []
@@ -100,7 +100,7 @@ const actions = {
           array.push(object)
         })
 
-        commit('setFaxIns', array)
+        commit('setMailIns', array)
       })
     }
   },
@@ -111,7 +111,7 @@ const actions = {
     if(form.file){
       var file = form.file
 
-      var storageRef = await storage.ref('fax-in/' + id + '.' + file.name.split('.').pop())
+      var storageRef = await fb.storage.ref('mail-in/' + id + '.' + file.name.split('.').pop())
       var task = storageRef.put(file)
       task.on('state_changed', snapshot => {
         var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100).toFixed(0)
@@ -142,18 +142,18 @@ const actions = {
           delete form.file
 
           form.status = "Telah diedit"
-          form.editedAt = Timestamp.fromDate(new Date())
+          form.editedAt = fb.Timestamp.fromDate(new Date())
           
           await ref.doc(id).set(form, { merge: true }).then(() => {
             dispatch('get')
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
-              body: `Fax berhasil diupdate.`,
+              body: `Surat berhasil diupdate.`,
             }, { root: true })
           }).catch(err => {
             dispatch('notifications/post', {
-              title: `Fax gagal diupdate.`,
+              title: `Surat gagal diupdate.`,
               body: err,
               timeout: 60
             }, { root: true })
@@ -164,18 +164,18 @@ const actions = {
       })
     } else {
       form.status = "Telah diedit"
-      form.editedAt = Timestamp.fromDate(new Date())
+      form.editedAt = fb.Timestamp.fromDate(new Date())
       
       await ref.doc(id).set(form, { merge: true }).then(() => {
         dispatch('get')
         commit('setLoading', null, { root: true })
         dispatch('notifications/post', {
           // title: 'Update profil berhasil.',
-          body: `Fax berhasil diupdate.`,
+          body: `Surat berhasil diupdate.`,
         }, { root: true })
       }).catch(err => {
         dispatch('notifications/post', {
-          title: `Fax gagal diupdate.`,
+          title: `Surat gagal diupdate.`,
           body: err,
           timeout: 60
         }, { root: true })
@@ -192,14 +192,14 @@ const actions = {
 
     await ref.doc(fax.id).delete().then(function() {
       if(fax.fileURL) {
-        var storageRef = storage.ref('fax-in/' + fax.id + '.' + fax.fileExt)
+        var storageRef = fb.storage.ref('mail-in/' + fax.id + '.' + fax.fileExt)
         storageRef.delete()
       }
       dispatch('get')
       commit('setLoading', null, { root: true })
       dispatch('notifications/post', {
         // title: 'Update profil berhasil.',
-        body: `Fax berhasil dihapus.`,
+        body: `Surat berhasil dihapus.`,
       }, { root: true })
     }).catch(err => {
       commit('setLoading', null, { root: true })

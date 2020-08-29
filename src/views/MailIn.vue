@@ -1,11 +1,11 @@
 <template>
-  <div id="fax-in">
+  <div id="mail-in">
     <content-body
-      title="Fax Masuk"
-      buttonText="Tambah Fax Masuk"
+      title="Surat Masuk"
+      buttonText="Tambah Surat Masuk"
       :headers="headers"
       :headersPrint="headersPrint"
-      :items="faxIns"
+      :items="mailIns"
       :sortBy="'createdAt'"
       desc
       @button-click="dialogAdd = true" >
@@ -94,21 +94,21 @@
     
     <content-dialog
       v-model="dialogAdd"
-      title="Tambah Fax Masuk"
+      title="Tambah Surat Masuk"
       buttonSave="Simpan"
-      @save="createFaxIn()" >
+      @save="createMailIn()" >
 
       <form-generator
-        v-model="faxForms"
+        v-model="addForms"
         :forms="forms"
       />
     </content-dialog>
 
     <content-dialog
       v-model="dialogEdit"
-      title="Edit Fax Masuk"
+      title="Edit Surat Masuk"
       buttonSave="Update"
-      @save="editFaxIn()" >
+      @save="editMailIn()" >
 
       <form-generator
         v-model="editForms"
@@ -118,10 +118,10 @@
 
     <dialog-confirm id="dialog-remove"
       v-model="dialogRemove"
-      title="Yakin hapus Fax ini?"
+      title="Yakin hapus Surat ini?"
       buttonText="Hapus"
       :remove="true"
-      @action="removeFaxIn()">
+      @action="removeMailIn()">
       <v-sheet id="dialog-detail"
         class="pa-4 mt-n4 mb-2"
         color="grey lighten-3"
@@ -152,7 +152,7 @@ import FormGenerator from '@/components/FormGenerator'
 import DialogConfirm from '@/components/DialogConfirm'
 
 export default {
-  name: 'FaxIn',
+  name: 'MailIn',
   components: {
     ContentBody,
     ContentDialog,
@@ -165,10 +165,6 @@ export default {
       // { text: 'Nomor', value: 'no' },
       // { text: 'Untuk', value: 'to' },
       { text: 'Tujuan', value: 'from' },
-      // { text: 'Asal Berita', value: 'origin' },
-      { text: 'Tembusan', value: 'copy' },
-      // { text: 'Jumlah Lembar', value: 'sheets', align: 'right' },
-      // { text: 'Status', value: 'status' },
       { text: 'Tanggal', value: 'createdAt' },
       { text: '', value: 'action', sortable: false },
     ],
@@ -176,28 +172,20 @@ export default {
       { header: 'Nomor', dataKey: 'no' },
       { header: 'Dari', dataKey: 'from' },
       { header: 'Untuk', dataKey: 'to' },
-      { header: 'Asal Berita', dataKey: 'origin' },
-      { header: 'Tembusan', dataKey: 'copy' },
-      { header: 'Hal', dataKey: 'subject' },
-      // { header: 'Jumlah Lembar', dataKey: 'sheets', align: 'right' },
+      { header: 'Perihal', dataKey: 'subject' },
       // { header: 'Tanggal', dataKey: 'createdAt' },
-      // { header: 'Status', dataKey: 'status' },
     ],
     dialogAdd: false,
     dialogEdit: false,
     dialogRemove: false,
-    faxForms: {},
+    addForms: {},
     editForms: {},
     forms: [
-      { label: 'File Fax Masuk', type: 'file', value: 'file' },
+      { label: 'File Surat Masuk', type: 'file', value: 'file' },
       { label: 'Nomor', type: 'text', value: 'no' },
       { label: 'Untuk', type: 'text', value: 'to' },
       { label: 'Dari', type: 'text', value: 'from' },
-      { label: 'Asal Berita', type: 'text', value: 'origin' },
-      { label: 'Tembusan', type: 'text', value: 'copy' },
-      { label: 'Hal', type: 'text', value: 'subject' },
-      { label: 'Jumlah Lembar', type: 'number', value: 'sheets' },
-      // { label: 'Tanggal Masuk', type: 'date', value: 'arrivedAt' },
+      { label: 'Perihal', type: 'text', value: 'subject' },
     ],
     menuActions: [
       { text: 'Download', icon: 'mdi-file-download-outline', color: 'success', action: 'download' },
@@ -206,23 +194,23 @@ export default {
     ],
   }),
   computed: {
-    faxIns() {
-      return this.$store.state.faxin.collection
+    mailIns() {
+      return this.$store.state.mailin.collection
     }
   },
   methods: {
-    createFaxIn() {
-      this.$store.dispatch('faxin/post', this.faxForms)
+    createMailIn() {
+      this.$store.dispatch('mailin/post', this.addForms)
       this.dialogAdd = false
-      this.faxForms = {}
+      this.addForms = {}
     },
-    editFaxIn() {
-      this.$store.dispatch('faxin/put', this.editForms)
+    editMailIn() {
+      this.$store.dispatch('mailin/put', this.editForms)
       this.dialogEdit = false
       this.editForms = {}
     },
-    removeFaxIn() {
-      this.$store.dispatch('faxin/remove', this.editForms)
+    removeMailIn() {
+      this.$store.dispatch('mailin/remove', this.editForms)
       this.dialogRemove = false
       this.editForms = {}
     },

@@ -24,7 +24,11 @@ const storage = firebase.storage()
 const RecaptchaVerifier = firebase.auth.RecaptchaVerifier
 const increment = firebase.firestore.FieldValue.increment
 const { Timestamp } = firebase.firestore
-const messaging = firebase.messaging()
+
+let messaging
+if(firebase.messaging.isSupported()) {
+  messaging = firebase.messaging()
+}
 
 // Offline support
 db.enablePersistence()

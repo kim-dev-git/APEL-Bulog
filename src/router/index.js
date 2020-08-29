@@ -28,6 +28,31 @@ Vue.use(VueRouter)
     component: lazyLoad('SignUp'),
   },
   {
+    path: '/surat-masuk',
+    name: 'MailIn',
+    component: lazyLoad('MailIn'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/surat-keluar',
+    name: 'MailOut',
+    component: lazyLoad('MailOut'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/surat-keluar/:id',
+    name: 'MailOutDetail',
+    props: true,
+    component: lazyLoad('MailOutDetail'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/fax-masuk',
     name: 'FaxIn',
     component: lazyLoad('FaxIn'),

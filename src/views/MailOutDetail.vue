@@ -1,5 +1,5 @@
 <template>
-  <div id="fax-out-detail"
+  <div id="mail-out-detail"
     class="mt-4">
     <v-layout
       class="align-center pb-8"
@@ -119,7 +119,7 @@
 
     <dialog-confirm id="dialog-printed-document"
       v-model="dialogPrintedDocument"
-      title="Fax sudah di cetak?"
+      title="Surat sudah di cetak?"
       buttonText="Sudah"
       @action="printedDocument()"
     />
@@ -193,7 +193,7 @@ export default {
   }),
   computed: {
     document() {
-      return this.$store.state.faxout.document
+      return this.$store.state.mailout.document
     },
     userProfile() {
       return this.$store.state.user.userProfile
@@ -213,8 +213,8 @@ export default {
 
     },
     updateDocument() {
-      this.$store.dispatch('faxout/put', this.formDocumentEdit)
-      // this.$store.dispatch('faxout/get', this.id)
+      this.$store.dispatch('mailout/put', this.formDocumentEdit)
+      // this.$store.dispatch('mailout/get', this.id)
       this.dialogDocumentEdit = false
     },
     editContent(value) {
@@ -226,8 +226,8 @@ export default {
       this.dialogContentEdit = true
     },
     updateContent() {
-      this.$store.dispatch('faxout/put', this.formContentEdit)
-      // this.$store.dispatch('faxout/get', this.id)
+      this.$store.dispatch('mailout/put', this.formContentEdit)
+      // this.$store.dispatch('mailout/get', this.id)
       this.selectedField = null
       this.dialogContentEdit = false
       this.dialogContentNew = false
@@ -290,19 +290,19 @@ export default {
     printedDocument() {
       var data = JSON.parse(JSON.stringify(this.document))
       data.status = 'Sudah diprint'
-      this.$store.dispatch('faxout/put', data)
+      this.$store.dispatch('mailout/put', data)
       this.dialogPrintedDocument = false
     },
     accDocument() {
       var data = JSON.parse(JSON.stringify(this.document))
       data.status = 'Disetujui'
-      this.$store.dispatch('faxout/put', data)
+      this.$store.dispatch('mailout/put', data)
       this.dialogAccDocument = false
     }
     
   },
   async mounted() {
-    await this.$store.dispatch('faxout/get', this.id)
+    await this.$store.dispatch('mailout/get', this.id)
     const commentsActive = this.commentsActive
   },
   watch: {
