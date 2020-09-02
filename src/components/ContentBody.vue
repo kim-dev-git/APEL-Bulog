@@ -7,6 +7,14 @@
         v-text="title"
       />
       <v-spacer />
+      <v-text-field
+        placeholder="Cari berdasarkan No / Perihal..."
+        v-model="search"
+        prepend-inner-icon="mdi-magnify"
+        class="mb-n6 mr-4"
+        dense
+        solo
+      />
       <print-table
         :title="title"
         :body="items"
@@ -28,13 +36,16 @@
       <v-data-table
         :mobile-breakpoint="Number(0)"
         :headers="headers"
-        :items="items"
+        :items="filteredItems()"
         :sort-by="sortBy ? sortBy : 'id'"
         :sort-desc="desc"
       >
         <template #body="props">
           <tbody>
-          <tr v-for="item in props.items" :key="item.id">
+          <tr v-for="(item, idx) in props.items" :key="idx">
+            <!-- <td>
+              {{ idx + 1 }}
+            </td> -->
             <td v-for="header in headers" :key="header.value">
               <slot name="row"
                 :item="item"
@@ -81,12 +92,56 @@ export default {
     'expand',
   ],
   data: () => ({
-    expanded: []
+    expanded: [],
+    search: null
   }),
   computed: {
     userProfile() {
       return this.$store.state.user.userProfile
+    },
+  },
+  methods: {
+    
+    filteredItems() {
+      var arr = this.items
+      var search = this.search
+      var headers = [...this.headers]
+      headers.push(
+        { value: 'no' },
+        { value: 'to' },
+        { value: 'from' },
+      )
+
+      const newArr = []
+
+      function match(key, search) {
+        arr.map(obj => {
+          if (obj[key] && obj[key].toLowerCase().indexOf(search) !== -1) {
+            var check = newArr.filter(v => v.id === obj.id).length > 0
+            
+            if(!check) {
+              newArr.push(obj)
+            }
+          }
+        })
+      }
+
+      if(!search) {
+        return arr
+      } else {
+        var filterVal = this.search.toLowerCase()
+        
+        headers.forEach(h => {
+          if(h.value !== 'createdAt') {
+            match(h.value, filterVal)
+          }
+        })
+      }
+
+      return newArr
     }
+  },
+  mounted() {
   }
 }
 </script>

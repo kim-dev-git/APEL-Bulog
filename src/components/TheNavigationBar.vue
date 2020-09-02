@@ -13,13 +13,15 @@
             <v-layout class="align-center mt-n3">
               <v-app-bar-nav-icon v-if="!$vuetify.breakpoint.smAndUp" @click="drawer = !drawer" />
 
-              <!-- <v-toolbar-title v-text="drawer" /> -->
-
               <v-spacer />
 
-              <v-btn icon>
-                <v-icon>mdi-magnify</v-icon>
-              </v-btn>
+              <v-avatar
+                v-if="userProfile"
+                color="red darken-1"
+                size="36"
+                class="mt-1">
+                <span v-if="userProfile.position" v-text="userProfile.position.substr(0, 1)" class="white--text font-weight-bold" />
+              </v-avatar>
             </v-layout>
           </v-card>
         </v-layout>
@@ -39,7 +41,12 @@ export default {
   },
   data: () => ({
     drawer: null
-  })
+  }),
+  computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    }
+  }
 }
 </script>
 
