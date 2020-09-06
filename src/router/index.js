@@ -36,6 +36,15 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/surat-masuk/:id/disposisi',
+    name: 'MailInDisposition',
+    component: lazyLoad('MailInDisposition'),
+    props: true,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/surat-keluar',
     name: 'MailOut',
     component: lazyLoad('MailOut'),

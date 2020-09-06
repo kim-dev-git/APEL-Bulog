@@ -23,14 +23,32 @@ export default new Vuex.Store({
       { title: 'Nota Intern', icon: 'mdi-note-text', link: '/nota-intern' },
       { title: 'Surat Perintah', icon: 'mdi-mail', link: '/surat-perintah' },
     ],
+    myDisposition: []
   },
   mutations: {
     setLoading(state, val) {
       state.loading = val
     },
+    setMyDisposition(state, val) {
+      state.myDisposition = val
+    },
   },
   actions: {
-    
+    getDisposition({ state, commit }, position) {
+      var myDisposition = fb.db.collectionGroup('disposition').where('to', '==', position)
+      myDisposition.onSnapshot(snapshoot => {
+        let array = []
+
+        snapshoot.forEach(doc => {
+          let object = doc.data()
+          object.id = doc.id
+
+          array.push(object)
+        })
+
+        commit('setMyDisposition', array)
+      })
+    }
   },
   modules: {
     notifications,

@@ -6,6 +6,21 @@ const ref = fb.db.collection(END_POINT)
 const state = {
   collection: [],
   document: null,
+  disposition: []
+}
+
+const getters = {
+  collection(state, getters, rootState) {
+    if(!rootState.user.userProfile.position) {
+      return
+    }
+    const user = rootState.user.userProfile
+    if(user.position !== 'TU' && user.position !== 'Pimwil') {
+      return state.collection.filter(item => item.tag && item.tag.includes(user.position))
+    } else {
+      return state.collection
+    }
+  }
 }
 
 const mutations = {
@@ -13,7 +28,11 @@ const mutations = {
     state.collection = val
   },
   setMailIn(state, val) {
+    state.document = null
     state.document = val
+  },
+  setMailInDisposition(state, val) {
+    state.disposition = val
   },
 }
 
@@ -61,7 +80,7 @@ const actions = {
           form.createdAt = fb.Timestamp.fromDate(new Date())
           
           await ref.doc(id).set(form).then(() => {
-            dispatch('get')
+            // dispatch('get')
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
@@ -89,6 +108,19 @@ const actions = {
       const object = query.data()
       object.id = id
       commit('setMailIn', object)
+
+      const subQuery = await ref.doc(id).collection('disposition').onSnapshot(snapshoot => {
+        let array = []
+
+        snapshoot.forEach(doc => {
+          let object = doc.data()
+          object.id = doc.id
+
+          array.push(object)
+        })
+
+        commit('setMailInDisposition', array)
+      })
     } else {
       const query = await ref.onSnapshot(snapshoot => {
         let array = []
@@ -97,6 +129,19 @@ const actions = {
           let object = doc.data()
           object.id = doc.id
 
+          const subQuery = ref.doc(doc.id).collection('disposition').onSnapshot(snapshoot => {
+            let tag = []
+    
+            snapshoot.forEach(doc => {
+              let subObject = doc.data()
+              subObject.id = doc.id
+    
+              tag.push(subObject.to)
+            })
+
+            object.tag = tag
+          })
+          
           array.push(object)
         })
 
@@ -107,6 +152,8 @@ const actions = {
   async put({ commit, dispatch }, form) {
     commit('setLoading', 'post', { root: true })
     const id = form.id
+
+    delete form.tag
 
     if(form.file){
       var file = form.file
@@ -145,7 +192,7 @@ const actions = {
           form.editedAt = fb.Timestamp.fromDate(new Date())
           
           await ref.doc(id).set(form, { merge: true }).then(() => {
-            dispatch('get')
+            // dispatch('get')
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
@@ -187,15 +234,15 @@ const actions = {
     
 
   },
-  async remove({ commit, dispatch }, fax) {
+  async remove({ commit, dispatch }, mail) {
     commit('setLoading', 'post', { root: true })
 
-    await ref.doc(fax.id).delete().then(function() {
-      if(fax.fileURL) {
-        var storageRef = fb.storage.ref('mail-in/' + fax.id + '.' + fax.fileExt)
+    await ref.doc(mail.id).delete().then(function() {
+      if(mail.fileURL) {
+        var storageRef = fb.storage.ref('mail-in/' + mail.id + '.' + mail.fileExt)
         storageRef.delete()
       }
-      dispatch('get')
+      // dispatch('get')
       commit('setLoading', null, { root: true })
       dispatch('notifications/post', {
         // title: 'Update profil berhasil.',
@@ -204,17 +251,60 @@ const actions = {
     }).catch(err => {
       commit('setLoading', null, { root: true })
       dispatch('notifications/post', {
-        title: 'Gagal menghapus fax.',
+        title: 'Gagal menghapus surat.',
         body: `${ err }.`,
       }, { root: true })
     })
-  }
+  },
+
+  async postDisposition({ commit, dispatch }, { id, form }) {
+    commit('setLoading', 'post', { root: true })
+
+    form.createdAt = fb.Timestamp.fromDate(new Date())
+          
+    await ref.doc(id).collection('disposition').add(form).then(() => {
+      dispatch('get')
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Disposisi berhasil ditambahkan.`,
+      }, { root: true })
+    }).catch(err => {
+      dispatch('notifications/post', {
+        title: `Disposisi gagal ditambahkan.`,
+        body: err,
+        timeout: 60
+      }, { root: true })
+      
+      commit('setLoading', null, { root: true })
+    })
+
+  },
+  async removeDisposition({ commit, dispatch }, { id, data }) {
+    commit('setLoading', 'post', { root: true })
+
+    await ref.doc(id).collection('disposition').doc(data.id).delete().then(function() {
+      dispatch('get')
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Disposisi berhasil dihapus.`,
+      }, { root: true })
+    }).catch(err => {
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        title: 'Gagal menghapus disposisi.',
+        body: `${ err }.`,
+      }, { root: true })
+    })
+  },
 }
 
 
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

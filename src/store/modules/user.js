@@ -66,12 +66,16 @@ const actions = {
     commit('setUserProfile', {})
     router.push('/masuk')
   },
-  async get({ commit }, user) {
+  async get({ commit, dispatch }, user) {
     commit('setLoading', 'get', { root: true })
 
     const userProfile = await ref.doc(user.uid).get()
 
     commit('setUserProfile', userProfile.data())
+
+    const position = userProfile.data().position
+
+    dispatch('getDisposition', position, { root: true })
     
     commit('setLoading', null, { root: true })
 
