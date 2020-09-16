@@ -1,7 +1,38 @@
 <template>
   <div id="mail-in-disposition">
     <v-card class="pa-4 mt-4">
-      {{ document }}
+      <v-layout
+        v-if="document"
+        class="align-center">
+        <div
+          class="text--secondary">
+          <p v-text="'Perihal'" class="mb-0" />
+          <p v-text="'Dari'" class="mb-0" />
+        </div>
+        <div
+          class="font-weight-bold">
+          <p v-text="': ' + document.subject" class="mb-0" />
+          <p v-text="': ' + document.from" class="mb-0" />
+        </div>
+        <v-spacer />
+        <v-layout
+          class="align-end"
+          column>
+          <div>
+            <span v-text="'Tanggal: '" class="mb-0 text-right" />
+            <span v-text="$options.filters.dayDate(document.createdAt)" class="mb-0 text-right font-weight-bold" />
+          </div>
+          <v-btn
+            @click="download(document)"
+            class="mt-2"
+            color="success"
+            outlined
+            small>
+            <v-icon v-text="'mdi-file-download-outline'" small left />
+            <span v-text="'Download file'" />
+          </v-btn>
+        </v-layout>
+      </v-layout>
     </v-card>
 
     <v-layout>
@@ -28,7 +59,7 @@
                   <div>
                     <v-chip v-text="item.to" color="info" small />
                     <v-chip v-text="item.disposition" color="success" class="mx-1" small />
-                    <v-icon v-if="item.report" v-text="'mdi-check-circle'" color="info" />
+                    <v-icon v-if="item.status" v-text="'mdi-check-circle'" color="info" />
                   </div>
                   <v-sheet
                     class="py-2 px-4 mt-2"
@@ -49,23 +80,44 @@
                   <p v-text="`${ $options.filters.fullDate(item.createdAt) }`" class="mb-0" />
                   <p v-text="item.no ? item.no : '-'" class="mb-0 font-weight-bold" />
                   <v-layout
-                    v-if="userProfile.position === 'TU' || userProfile.position === 'Pimwil' || userProfile.position === item.to"
+                    v-if="item.status"
+                    class="align-end primary--text subtitle-2">
+                    <span v-text="'Ditindak lanjuti pada tanggal'" class="mb-0 font-weight-light" />
+                    <span v-text="': '+$options.filters.fullDate(item.doneAt)" class="mb-0 font-weight-bold" />
+                  </v-layout>
+                  <v-layout
+                    v-if="userProfile.position === 'TU' ||
+                      userProfile.position === 'Pimwil' ||
+                      userProfile.position === item.to"
                     class="align-end">
-                    <div
-                      v-for="(menu, i) in menuActions"
-                      :key="i">
-                      <v-tooltip top>
+                    <div>
+                      <v-tooltip top
+                        v-if="userProfile.position !== 'Pimwil' && userProfile.position !== 'TU' && !item.status">
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                             v-bind="attrs"
                             v-on="on"
-                            @click="menuAction(menu.action, item)"
+                            @click="menuAction('done', item)"
                             color="info"
                             icon>
-                            <v-icon v-text="menu.icon" :color="menu.color" />
+                            <v-icon v-text="'mdi-clipboard-check-outline'" :color="'primary'" />
                           </v-btn>
                         </template>
-                        <span v-text="menu.text" />
+                        <span v-text="'Sudah ditindak lanjuti'" />
+                      </v-tooltip>
+                      <v-tooltip top
+                        v-if="userProfile.position === 'Pimwil'">
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            @click="menuAction('delete', item)"
+                            color="info"
+                            icon>
+                            <v-icon v-text="'mdi-delete-outline'" :color="'error'" />
+                          </v-btn>
+                        </template>
+                        <span v-text="'Hapus'" />
                       </v-tooltip>
                     </div>
                   </v-layout>
@@ -147,7 +199,7 @@ export default {
       { label: 'Catatan', type: 'text', value: 'notes' },
     ],
     menuActions: [
-      { text: 'Laporan', icon: 'mdi-clipboard-check-outline', color: 'primary', action: 'report' },
+      { text: 'Sudah ditindak lanjuti', icon: 'mdi-clipboard-check-outline', color: 'primary', action: 'done' },
       { text: 'Hapus', icon: 'mdi-delete-outline', color: 'error', action: 'delete' },
     ],
   }),
@@ -169,12 +221,12 @@ export default {
     post() {
       delete this.dataAdd.id
       delete this.dataAdd.fileExt
-      this.$store.dispatch('mailin/postDisposition', { id: this.document.id, form: this.dataAdd})
+      this.$store.dispatch('mailin/postDisposition', { id: this.document.id, form: this.dataAdd, document: this.document })
       this.dialogAdd = false
       this.dataAdd = {}
     },
     remove() {
-      this.$store.dispatch('mailin/removeDisposition', { id: this.document.id, data: this.dataEdit})
+      this.$store.dispatch('mailin/removeDisposition', { id: this.document.id, data: this.dataEdit })
       this.dialogRemove = false
       this.dataEdit = {}
     },
@@ -194,10 +246,19 @@ export default {
         case 'disposition':
           this.$router.push('/surat-masuk/' + item.id + '/disposisi')
           break
+        case 'done':
+          this.done(item)
+          break
         default:
           break
       }
     },
+    download(document) {
+      window.open(document.fileURL, '_blank')
+    },
+    done(item) {
+      this.$store.dispatch('mailin/doneDisposition', { id: this.document.id, form: item })
+    }
   },
   mounted() {
     this.get()

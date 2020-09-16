@@ -257,9 +257,10 @@ const actions = {
     })
   },
 
-  async postDisposition({ commit, dispatch }, { id, form }) {
+  async postDisposition({ commit, dispatch }, { id, form, document }) {
     commit('setLoading', 'post', { root: true })
 
+    form.document = document
     form.createdAt = fb.Timestamp.fromDate(new Date())
           
     await ref.doc(id).collection('disposition').add(form).then(() => {
@@ -297,6 +298,33 @@ const actions = {
         body: `${ err }.`,
       }, { root: true })
     })
+  },
+  async doneDisposition({ commit, dispatch }, { id, form }) {
+    commit('setLoading', 'post', { root: true })
+
+    form.document = document
+
+    await ref.doc(id).collection('disposition').doc(form.id).set(
+      { 
+        status: 'Sudah ditindak lanjuti',
+        doneAt: fb.Timestamp.fromDate(new Date())
+      }, { merge: true }).then(() => {
+      dispatch('get', id)
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Disposisi sudah ditindak lanjuti.`,
+      }, { root: true })
+    }).catch(err => {
+      dispatch('notifications/post', {
+        title: `Disposisi gagal ditindak lanjuti.`,
+        body: err,
+        timeout: 60
+      }, { root: true })
+      
+      commit('setLoading', null, { root: true })
+    })
+
   },
 }
 

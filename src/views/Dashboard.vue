@@ -1,17 +1,43 @@
 <template>
   <div id="home">
-    <v-card-title class="ml-n4 headline text--secondary" v-text="'Dashboard'" />
-    <v-card class="pa-4" height="2000">
-      Halaman Dashbor
-    </v-card>
+    <section>
+      <v-card-title class="ml-n4 headline text--secondary" v-text="'Dashboard'" />
+      <v-card
+        v-if="userProfile && userProfile.position"
+        class="pa-4 mt-n2">
+        <span v-text="'Selamat datang '" />
+        <span v-text="userProfile.position" class="font-weight-bold" />
+      </v-card>
+    </section>
+
+    <section
+      v-if="userProfile.position !== 'Pimwil' && userProfile.position !== 'TU'"
+      class="mx-n1 px-1">
+      <v-card-title class="ml-n4 headline text--secondary" v-text="'Disposisi (' + myDisposition.length + ')'" />
+      <v-card
+        class="mt-n3 transparent"
+        flat>
+        <card-list :items="myDisposition" />
+      </v-card>
+    </section>
   </div>
 </template>
 
 <script>
 
+import CardList from '../components/CardList'
 export default {
   name: 'Home',
   components: {
+    CardList
+  },
+  computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    },
+    myDisposition() {
+      return this.$store.state.myDisposition
+    }
   }
 }
 </script>
