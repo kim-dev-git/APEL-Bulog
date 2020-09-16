@@ -7,11 +7,7 @@
         v-for="(item, index) in items"
         :key="index"
         :item="item"
-      />
-      <card-item
-        v-for="(item, index) in items"
-        :key="index"
-        :item="item"
+        @click="onClick($event)"
       />
     </v-layout>
   </div>
@@ -24,7 +20,12 @@ export default {
   components: {
     CardItem
   },
-  props: [ 'items' ]
+  props: [ 'items' ],
+  methods: {
+    onClick(item) {
+      this.$emit('click', item)
+    }
+  }
 }
 </script>
 

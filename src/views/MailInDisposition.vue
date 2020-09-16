@@ -139,6 +139,7 @@
       <form-generator
         v-model="dataAdd"
         :forms="forms"
+        :options="options"
       />
     </content-dialog>
 
@@ -194,7 +195,7 @@ export default {
     dataEdit: {},
     forms: [
       { label: 'Nomor', type: 'text', value: 'no' },
-      { label: 'Tujuan', type: 'text', value: 'to' },
+      { label: 'Tujuan', type: 'combobox', value: 'to' },
       { label: 'Disposisi', type: 'text', value: 'disposition' },
       { label: 'Catatan', type: 'text', value: 'notes' },
     ],
@@ -202,6 +203,15 @@ export default {
       { text: 'Sudah ditindak lanjuti', icon: 'mdi-clipboard-check-outline', color: 'primary', action: 'done' },
       { text: 'Hapus', icon: 'mdi-delete-outline', color: 'error', action: 'delete' },
     ],
+    options: {
+      to: [
+        'Kabid MINKU',
+        'Kabid ADA',
+        'Kabid OPP',
+        'Kabid KOM',
+        'Kabid PBI',
+      ]
+    }
   }),
   computed: {
     userProfile() {
@@ -221,6 +231,7 @@ export default {
     post() {
       delete this.dataAdd.id
       delete this.dataAdd.fileExt
+      this.dataAdd.type = 'surat-masuk'
       this.$store.dispatch('mailin/postDisposition', { id: this.document.id, form: this.dataAdd, document: this.document })
       this.dialogAdd = false
       this.dataAdd = {}

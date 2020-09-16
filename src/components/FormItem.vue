@@ -32,12 +32,12 @@
         class="align-center"
         @click="dialog = true" >
         <v-icon v-if="form.icon" class="mx-4">{{ form.icon }}</v-icon>
-        <p v-if="!value" class="mb-0 text--disabled" :class="!form.icon ? 'ml-14' : ''">{{ form.label }}</p>
+        <p v-if="!value" class="mb-0 text--disabled" :class="form.icon ? 'ml-14' : ''">{{ form.label }}</p>
         <p v-else class="mb-0" :class="!form.icon ? 'ml-1' : ''">{{ value }}</p>
         <v-dialog v-model="dialog" width="240">
           <v-card class="pa-4">
             <v-radio-group v-model="newValue" @change="updateData($event), dialog = false">
-              <v-radio v-for="option in form.option" :key="option" :label="option" :value="option"></v-radio>
+              <v-radio v-for="option in form.option" :key="option" :label="option" :value="option" />
             </v-radio-group>
           </v-card>
         </v-dialog>

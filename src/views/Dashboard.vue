@@ -17,7 +17,7 @@
       <v-card
         class="mt-n3 transparent"
         flat>
-        <card-list :items="myDisposition" />
+        <card-list :items="myDisposition" @click="cardClick($event)" />
       </v-card>
     </section>
   </div>
@@ -37,6 +37,11 @@ export default {
     },
     myDisposition() {
       return this.$store.state.myDisposition
+    }
+  },
+  methods: {
+    cardClick(item) {
+      this.$router.push(`/${ item.type }/${ item.document.id }/disposisi`)
     }
   }
 }

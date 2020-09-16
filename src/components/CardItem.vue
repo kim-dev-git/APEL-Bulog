@@ -2,8 +2,9 @@
   <div id="card-item">
     <v-card
       height="120"
-      width="300"
-      class="ma-2 mb-4" >
+      width="320"
+      class="ma-2 mb-4"
+      @click="onClick(item)" >
       <v-layout
         class="pa-4"
         :style="leftBorder('grey')"
@@ -12,6 +13,8 @@
         <p v-text="item.document.from" class="mb-0" />
         <v-divider class="my-2" />
         <v-layout class="align-center">
+          <v-chip v-if="item.status" v-text="item.status" color="info" small />
+          <v-chip v-else v-text="'Perlu ditindak lanjuti'" color="warning" small />
           <v-spacer />
           <v-icon v-text="'mdi-clock-outline'" left small />
           <span v-text="$options.filters.fullDate(item.createdAt)" class="text--secondary caption" />
@@ -43,6 +46,9 @@ export default {
       const thick = 6
       style = `border-left: ${ thick }px solid ${ color } !important; height: 100%;`
       return style
+    },
+    onClick(item) {
+      this.$emit('click', item)
     }
   }
 }
