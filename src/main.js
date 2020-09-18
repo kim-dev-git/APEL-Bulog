@@ -24,6 +24,15 @@ auth.onAuthStateChanged((user) => {
 
   if (user) {
 
+    var date = new Date()
+    var month = date.getUTCMonth() + 1
+    var year = date.getFullYear()
+    if(month.length > 1) {
+      store.commit('setSelectedMonth', year + '-' + month)
+    } else {
+      store.commit('setSelectedMonth', year + '-' + '0' + month)
+    }
+
     store.dispatch('user/get', user)
     store.dispatch('mailin/get')
     store.dispatch('mailout/get')

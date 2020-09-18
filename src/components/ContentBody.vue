@@ -4,17 +4,28 @@
       class="align-center mx-0"
       row>
       <v-flex xs12 md4>
-        <v-card-title
-          class="ml-n4 headline text--secondary"
-          v-text="title"
-        />
+        <v-layout class="align-center">
+          <v-card-title
+            class="ml-n4 headline text--secondary"
+            v-text="title"
+          />
+          <v-text-field
+            v-if="!$vuetify.breakpoint.mdAndUp"
+            type="month"
+            v-model="month"
+            class="mb-n7"
+            outlined
+            dense
+            solo
+          />
+        </v-layout>
       </v-flex>
       <v-flex xs12 md8 class="mb-3 mb-md-0">
         <v-layout class="d-flex flex-row-reverse align-center">
           <v-btn
             v-if="buttonText && userProfile.position !== 'Pimwil'"
             color="primary"
-            class="text-none ml-4"
+            class="text-none"
             @click="$emit('button-click')" >
             <v-icon left class="ml-0" v-text="'mdi-plus'" />
             <span class="mr-2" v-text="buttonText" />
@@ -24,6 +35,16 @@
             :title="title"
             :body="items"
             :headers="headersPrint"
+            class="mx-sm-4"
+          />
+          <v-text-field
+            v-if="$vuetify.breakpoint.mdAndUp"
+            type="month"
+            v-model="month"
+            class="mb-n7"
+            outlined
+            dense
+            solo
           />
         </v-layout>
       </v-flex>
@@ -86,6 +107,7 @@
 
 <script>
 
+import { Timestamp } from '../firebase'
 import ContentDialog from '@/components/ContentDialog'
 import PrintTable from '@/components/PrintTable'
 export default {
@@ -105,17 +127,41 @@ export default {
   ],
   data: () => ({
     expanded: [],
-    search: null
+    search: null,
+    month: null,
   }),
   computed: {
     userProfile() {
       return this.$store.state.user.userProfile
     },
+    selectedMonth() {
+      return this.$store.state.selectedMonth
+    },
+    filterByMonth() {
+      if(!this.selectedMonth || !this.items) {
+        return
+      }
+      var selectedMonth = this.selectedMonth
+      var year = Number(selectedMonth.substr(0, 4))
+      var month = Number(selectedMonth.slice(-2)) - 1
+      var start = new Date(year, month, 1)
+      var end = new Date(year, month + 1, 0)
+      // console.log('Year', year)
+      // console.log('Month', month)
+      // console.log('Start', Timestamp.fromDate(start))
+      // console.log('End', Timestamp.fromDate(end))
+      
+      return this.items.filter(v =>
+        v.createdAt &&
+        v.createdAt &&
+        v.createdAt > Timestamp.fromDate(start) &&
+        v.createdAt < Timestamp.fromDate(end)
+      )
+    }
   },
-  methods: {
-    
+  methods: {    
     filteredItems() {
-      var arr = this.items
+      var arr = this.filterByMonth
       var search = this.search
       var headers = [...this.headers]
       headers.push(
@@ -151,9 +197,29 @@ export default {
       }
 
       return newArr
+    },
+
+    getDate() {
+      var date = new Date()
+      var month = date.getUTCMonth() + 1
+      var year = date.getFullYear()
+      if(month.length > 1) {
+        this.month = year + '-' + month
+      } else {
+        this.month = year + '-' + '0' + month
+      }
     }
   },
   mounted() {
+    this.getDate()
+  },
+  watch: {
+    month: {
+      immediate: true,
+      handler() {
+        this.$store.commit('setSelectedMonth', this.month)
+      }
+    }
   }
 }
 </script>

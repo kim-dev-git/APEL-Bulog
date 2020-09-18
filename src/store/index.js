@@ -13,6 +13,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    selectedMonth: null,
     loading: null,
     navigationMenu: [
       { title: 'Dasbor', icon: 'mdi-view-dashboard', link: '/' },
@@ -28,6 +29,9 @@ export default new Vuex.Store({
   mutations: {
     setLoading(state, val) {
       state.loading = val
+    },
+    setSelectedMonth(state, val) {
+      state.selectedMonth = val
     },
     setMyDisposition(state, val) {
       state.myDisposition = val

@@ -2,6 +2,7 @@ import * as fb from '@/firebase'
 
 const END_POINT = 'mailIn'
 const ref = fb.db.collection(END_POINT)
+const Timestamp = fb.Timestamp
 
 const state = {
   collection: [],
@@ -102,14 +103,15 @@ const actions = {
     
 
   },
-  async get({ commit }, id = null) {
+  async get({ commit, rootState }, id = null) {
     if(id) {
       const query = await ref.doc(id).get()
       const object = query.data()
       object.id = id
       commit('setMailIn', object)
 
-      const subQuery = await ref.doc(id).collection('disposition').onSnapshot(snapshoot => {
+      const subQuery = await ref.doc(id).collection('disposition')
+        .onSnapshot(snapshoot => {
         let array = []
 
         snapshoot.forEach(doc => {
