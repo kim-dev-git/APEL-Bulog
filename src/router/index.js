@@ -70,6 +70,15 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/fax-masuk/:id/disposisi',
+    name: 'FaxInDisposition',
+    component: lazyLoad('FaxInDisposition'),
+    props: true,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/fax-keluar',
     name: 'FaxOut',
     component: lazyLoad('FaxOut'),

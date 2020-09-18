@@ -6,7 +6,7 @@
       :headers="headers"
       :headersPrint="headersPrint"
       :items="faxIns"
-      :sortBy="'createdAt'"
+      :sortBy="'createdAt.seconds'"
       desc
       @button-click="dialogAdd = true" >
 
@@ -200,6 +200,7 @@ export default {
       // { label: 'Tanggal Masuk', type: 'date', value: 'arrivedAt' },
     ],
     menuActions: [
+      { text: 'Disposisi', icon: 'mdi-email-send-outline', color: 'info', action: 'disposition' },
       { text: 'Download', icon: 'mdi-file-download-outline', color: 'success', action: 'download' },
       { text: 'Edit', icon: 'mdi-file-document-edit-outline', color: 'primary', action: 'edit' },
       { text: 'Hapus', icon: 'mdi-delete-outline', color: 'error', action: 'delete' },
@@ -207,7 +208,7 @@ export default {
   }),
   computed: {
     faxIns() {
-      return this.$store.state.faxin.collection
+      return this.$store.getters['faxin/collection']
     }
   },
   methods: {
@@ -255,6 +256,9 @@ export default {
           break
         case 'download':
           window.open(item.fileURL, '_blank')
+          break
+        case 'disposition':
+          this.$router.push('/fax-masuk/' + item.id + '/disposisi')
           break
         default:
           break

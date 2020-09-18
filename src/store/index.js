@@ -35,7 +35,7 @@ export default new Vuex.Store({
   },
   actions: {
     getDisposition({ state, commit }, position) {
-      var myDisposition = fb.db.collectionGroup('disposition').where('to', '==', position)
+      var myDisposition = fb.db.collectionGroup('disposition').where('to', '==', position).orderBy("createdAt", "desc")
       myDisposition.onSnapshot(snapshoot => {
         let array = []
 

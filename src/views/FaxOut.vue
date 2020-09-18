@@ -5,8 +5,8 @@
       buttonText="Tambah Fax Keluar"
       :headers="headers"
       :headersPrint="headersPrint"
-      :items="faxOutCollection"
-      :sortBy="'createdAt'"
+      :items="faxOut"
+      :sortBy="'createdAt.seconds'"
       desc
       @button-click="dialogAdd = true"
       expand >
@@ -178,7 +178,7 @@ export default {
     forms: [
       { label: 'Nomor', type: 'text', value: 'no' },
       { label: 'Kepada', type: 'text', value: 'to' },
-      { label: 'Dari', type: 'text', value: 'from' },
+      // { label: 'Dari', type: 'text', value: 'from' },
       { label: 'Asal Berita', type: 'text', value: 'origin' },
       { label: 'Perihal', type: 'text', value: 'subject' },
       { label: 'Jumlah Lembar', type: 'number', value: 'sheets' },
@@ -189,8 +189,14 @@ export default {
     ],
   }),
   computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    },
     faxOutCollection() {
       return this.$store.state.faxout.collection
+    },
+    faxOut() {
+      return this.$store.getters['faxout/collection']
     }
   },
   methods: {
@@ -252,6 +258,10 @@ export default {
       }
     },
     createFaxOut() {
+      this.faxForms.from = this.userProfile.position
+      delete this.faxForms.id
+      delete this.faxForms.fileExt
+      // console.log('Console:', this.faxForms)
       this.$store.dispatch('faxout/post', this.faxForms)
       this.dialogAdd = false
       this.faxForms = {}

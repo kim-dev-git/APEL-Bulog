@@ -6,7 +6,7 @@
       :headers="headers"
       :headersPrint="headersPrint"
       :items="mailIns"
-      :sortBy="'createdAt'"
+      :sortBy="'createdAt.seconds'"
       desc
       @button-click="dialogAdd = true" >
 

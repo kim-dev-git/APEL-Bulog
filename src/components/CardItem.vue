@@ -8,15 +8,26 @@
       <v-layout
         class="pa-4"
         :style="leftBorder('grey')"
-        column>
-        <p v-text="item.document.subject" class="font-weight-bold mb-0" />
+        column>   
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <p 
+              v-bind="attrs"
+              v-on="on"
+              v-text="item.document.subject"
+              class="d-inline-block text-truncate font-weight-bold mb-0"
+              style="max-width: 300px;"
+            />
+          </template>
+          <p v-text="item.document.subject" class="font-weight-medium mb-0" />
+        </v-tooltip>
         <p v-text="item.document.from" class="mb-0" />
         <v-divider class="my-2" />
         <v-layout class="align-center">
           <v-chip v-if="item.status" v-text="item.status" color="info" small />
           <v-chip v-else v-text="'Perlu ditindak lanjuti'" color="warning" small />
           <v-spacer />
-          <v-icon v-text="'mdi-clock-outline'" left small />
+          <v-icon v-text="'mdi-clock-outline'" class="mr-1" small />
           <span v-text="$options.filters.fullDate(item.createdAt)" class="text--secondary caption" />
         </v-layout>
         <!-- <div style="position: absolute; bottom: 1;">

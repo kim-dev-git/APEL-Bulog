@@ -5,8 +5,8 @@
       buttonText="Tambah Mail Keluar"
       :headers="headers"
       :headersPrint="headersPrint"
-      :items="mailOutCollection"
-      :sortBy="'createdAt'"
+      :items="mailOut"
+      :sortBy="'createdAt.seconds'"
       desc
       @button-click="dialogAdd = true"
       expand >
@@ -178,7 +178,7 @@ export default {
     forms: [
       { label: 'Nomor', type: 'text', value: 'no' },
       { label: 'Kepada', type: 'text', value: 'to' },
-      { label: 'Dari', type: 'text', value: 'from' },
+      // { label: 'Dari', type: 'text', value: 'from' },
       { label: 'Asal Berita', type: 'text', value: 'origin' },
       { label: 'Perihal', type: 'text', value: 'subject' },
       { label: 'Jumlah Lembar', type: 'number', value: 'sheets' },
@@ -189,8 +189,14 @@ export default {
     ],
   }),
   computed: {
+    userProfile() {
+      return this.$store.state.user.userProfile
+    },
     mailOutCollection() {
       return this.$store.state.mailout.collection
+    },
+    mailOut() {
+      return this.$store.getters['mailout/collection']
     }
   },
   methods: {
@@ -252,6 +258,7 @@ export default {
       }
     },
     createMailOut() {
+      this.addForms.from = this.userProfile.position
       this.$store.dispatch('mailout/post', this.addForms)
       console.log('Console:', this.addForms)
       this.dialogAdd = false

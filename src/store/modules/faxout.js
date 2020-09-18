@@ -1,6 +1,4 @@
 import * as fb from '@/firebase'
-import router from '@/router'
-// import state from './state'
 
 const END_POINT = 'faxOut'
 const ref = fb.db.collection(END_POINT)
@@ -19,6 +17,20 @@ const mutations = {
   },
 }
 
+const getters = {
+  collection(state, getters, rootState) {
+    if(!rootState.user.userProfile.position) {
+      return
+    }
+    const user = rootState.user.userProfile
+    if(user.position !== 'TU' && user.position !== 'Pimwil') {
+      return state.collection.filter(item => item.from === user.position)
+    } else {
+      return state.collection
+    }
+  }
+}
+
 const actions = {
   async post({ commit, dispatch }, form) {
     
@@ -28,7 +40,7 @@ const actions = {
     form.createdAt = fb.Timestamp.fromDate(new Date())
 
     const list = [
-      '<b>Klik teks ini</b> untuk mengedit  <i>list</i>, <b>Klik Tambah Data</b> disebelah kanan untuk menambah <i>list </i> baruz'
+      '<b>Klik teks ini</b> untuk mengedit  <i>list</i>, <b>Klik Tambah Data</b> disebelah kanan untuk menambah <i>list </i> baru'
     ]
 
     const content = {
@@ -135,6 +147,7 @@ const actions = {
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

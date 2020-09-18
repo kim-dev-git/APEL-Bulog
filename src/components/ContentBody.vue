@@ -1,33 +1,45 @@
 <template>
   <div id="content-body">
     <v-layout
-      class="align-center">
-      <v-card-title
-        class="ml-n4 headline text--secondary"
-        v-text="title"
-      />
-      <v-spacer />
-      <v-text-field
-        placeholder="Cari berdasarkan No / Perihal..."
-        v-model="search"
-        prepend-inner-icon="mdi-magnify"
-        class="mb-n6 mr-4"
-        dense
-        solo
-      />
-      <print-table
-        :title="title"
-        :body="items"
-        :headers="headersPrint"
-      />
-      <v-btn
-        v-if="buttonText && userProfile.position !== 'Pimwil'"
-        color="primary"
-        class="text-none ml-4"
-        @click="$emit('button-click')" >
-        <v-icon left class="ml-0" v-text="'mdi-plus'" />
-        <span class="mr-2" v-text="buttonText" />
-      </v-btn>
+      class="align-center mx-0"
+      row>
+      <v-flex xs12 md4>
+        <v-card-title
+          class="ml-n4 headline text--secondary"
+          v-text="title"
+        />
+      </v-flex>
+      <v-flex xs12 md8 class="mb-3 mb-md-0">
+        <v-layout class="d-flex flex-row-reverse align-center">
+          <v-btn
+            v-if="buttonText && userProfile.position !== 'Pimwil'"
+            color="primary"
+            class="text-none ml-4"
+            @click="$emit('button-click')" >
+            <v-icon left class="ml-0" v-text="'mdi-plus'" />
+            <span class="mr-2" v-text="buttonText" />
+          </v-btn>
+          <v-spacer v-if="!$vuetify.breakpoint.smAndUp" />
+          <print-table
+            :title="title"
+            :body="items"
+            :headers="headersPrint"
+          />
+        </v-layout>
+      </v-flex>
+      
+      <v-flex xs12 class="mb-3 mb-xl-0">
+        <v-layout>
+          <v-text-field
+            placeholder="Cari berdasarkan No / Perihal..."
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            class="mb-n6 mr-0 mr-xl-4"
+            dense
+            solo
+          />
+        </v-layout>
+      </v-flex>
     </v-layout>
 
     <v-card

@@ -1,4 +1,4 @@
-import { db } from '@/firebase'
+import { db, Timestamp } from '@/firebase'
 
 const END_POINT = 'faxIn'
 const ref = db.collection(END_POINT)
@@ -6,6 +6,7 @@ const ref = db.collection(END_POINT)
 const state = {
   collection: [],
   document: null,
+  disposition: []
 }
 
 const mutations = {
@@ -15,6 +16,23 @@ const mutations = {
   setFaxIn(state, val) {
     state.document = val
   },
+  setFaxInDisposition(state, val) {
+    state.disposition = val
+  },
+}
+
+const getters = {
+  collection(state, getters, rootState) {
+    if(!rootState.user.userProfile.position) {
+      return
+    }
+    const user = rootState.user.userProfile
+    if(user.position !== 'TU' && user.position !== 'Pimwil') {
+      return state.collection.filter(item => item.tag && item.tag.includes(user.position))
+    } else {
+      return state.collection
+    }
+  }
 }
 
 const actions = {
@@ -89,6 +107,19 @@ const actions = {
       const object = query.data()
       object.id = id
       commit('setFaxIn', object)
+
+      const subQuery = await ref.doc(id).collection('disposition').onSnapshot(snapshoot => {
+        let array = []
+
+        snapshoot.forEach(doc => {
+          let object = doc.data()
+          object.id = doc.id
+
+          array.push(object)
+        })
+
+        commit('setFaxInDisposition', array)
+      })
     } else {
       const query = await ref.onSnapshot(snapshoot => {
         let array = []
@@ -97,6 +128,19 @@ const actions = {
           let object = doc.data()
           object.id = doc.id
 
+          const subQuery = ref.doc(doc.id).collection('disposition').onSnapshot(snapshoot => {
+            let tag = []
+    
+            snapshoot.forEach(doc => {
+              let subObject = doc.data()
+              subObject.id = doc.id
+    
+              tag.push(subObject.to)
+            })
+
+            object.tag = tag
+          })
+          
           array.push(object)
         })
 
@@ -208,13 +252,84 @@ const actions = {
         body: `${ err }.`,
       }, { root: true })
     })
-  }
+  },
+
+  async postDisposition({ commit, dispatch }, { id, form, document }) {
+    commit('setLoading', 'post', { root: true })
+
+    form.document = document
+    form.createdAt = Timestamp.fromDate(new Date())
+          
+    await ref.doc(id).collection('disposition').add(form).then(() => {
+      dispatch('get')
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Disposisi berhasil ditambahkan.`,
+      }, { root: true })
+    }).catch(err => {
+      dispatch('notifications/post', {
+        title: `Disposisi gagal ditambahkan.`,
+        body: err,
+        timeout: 60
+      }, { root: true })
+      
+      commit('setLoading', null, { root: true })
+    })
+
+  },
+  async removeDisposition({ commit, dispatch }, { id, data }) {
+    commit('setLoading', 'post', { root: true })
+
+    await ref.doc(id).collection('disposition').doc(data.id).delete().then(function() {
+      dispatch('get')
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Disposisi berhasil dihapus.`,
+      }, { root: true })
+    }).catch(err => {
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        title: 'Gagal menghapus disposisi.',
+        body: `${ err }.`,
+      }, { root: true })
+    })
+  },
+  async doneDisposition({ commit, dispatch }, { id, form }) {
+    commit('setLoading', 'post', { root: true })
+
+    form.document = document
+
+    await ref.doc(id).collection('disposition').doc(form.id).set(
+      { 
+        status: 'Sudah ditindak lanjuti',
+        doneAt: Timestamp.fromDate(new Date())
+      }, { merge: true }).then(() => {
+      dispatch('get', id)
+      commit('setLoading', null, { root: true })
+      dispatch('notifications/post', {
+        // title: 'Update profil berhasil.',
+        body: `Disposisi sudah ditindak lanjuti.`,
+      }, { root: true })
+    }).catch(err => {
+      dispatch('notifications/post', {
+        title: `Disposisi gagal ditindak lanjuti.`,
+        body: err,
+        timeout: 60
+      }, { root: true })
+      
+      commit('setLoading', null, { root: true })
+    })
+
+  },
 }
 
 
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

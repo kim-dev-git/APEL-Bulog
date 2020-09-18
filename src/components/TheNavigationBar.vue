@@ -15,6 +15,8 @@
 
               <v-spacer />
 
+              <p v-text="userProfile.position" class="font-weight-bold mb-n2 mr-2" />
+
               <v-avatar
                 v-if="userProfile"
                 color="red darken-1"

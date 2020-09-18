@@ -254,7 +254,9 @@ export default {
       arr.splice(value, 1)
 
       // Remove Comment
-      data.notes[value] = null
+      if(data.notes && data.notes[value]) {
+        data.notes[value] = null
+      }
       this.commentsActive[value] = false
 
       this.updateContent()

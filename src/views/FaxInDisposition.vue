@@ -1,5 +1,5 @@
 <template>
-  <div id="mail-in-disposition">
+  <div id="fax-in-disposition">
     <v-card class="pa-4 mt-4">
       <v-layout
         v-if="document"
@@ -218,26 +218,26 @@ export default {
       return this.$store.state.user.userProfile
     },
     document() {
-      return this.$store.state.mailin.document
+      return this.$store.state.faxin.document
     },
     disposition() {
-      return this.$store.state.mailin.disposition
+      return this.$store.state.faxin.disposition
     }
   },
   methods: {
     get() {
-      this.$store.dispatch('mailin/get', this.id)
+      this.$store.dispatch('faxin/get', this.id)
     },
     post() {
       delete this.dataAdd.id
       delete this.dataAdd.fileExt
-      this.dataAdd.type = 'surat-masuk'
-      this.$store.dispatch('mailin/postDisposition', { id: this.document.id, form: this.dataAdd, document: this.document })
+      this.dataAdd.type = 'fax-masuk'
+      this.$store.dispatch('faxin/postDisposition', { id: this.document.id, form: this.dataAdd, document: this.document })
       this.dialogAdd = false
       this.dataAdd = {}
     },
     remove() {
-      this.$store.dispatch('mailin/removeDisposition', { id: this.document.id, data: this.dataEdit })
+      this.$store.dispatch('faxin/removeDisposition', { id: this.document.id, data: this.dataEdit })
       this.dialogRemove = false
       this.dataEdit = {}
     },
@@ -255,7 +255,7 @@ export default {
           window.open(item.fileURL, '_blank')
           break
         case 'disposition':
-          this.$router.push('/surat-masuk/' + item.id + '/disposisi')
+          this.$router.push('/fax-masuk/' + item.id + '/disposisi')
           break
         case 'done':
           this.done(item)
@@ -268,7 +268,7 @@ export default {
       window.open(document.fileURL, '_blank')
     },
     done(item) {
-      this.$store.dispatch('mailin/doneDisposition', { id: this.document.id, form: item })
+      this.$store.dispatch('faxin/doneDisposition', { id: this.document.id, form: item })
     }
   },
   mounted() {
