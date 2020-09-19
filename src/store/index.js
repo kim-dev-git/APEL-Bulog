@@ -58,7 +58,9 @@ export default new Vuex.Store({
           let object = doc.data()
           object.id = doc.id
 
-          array.push(object)
+          if(!object.status) {
+            array.push(object)
+          }
         })
 
         commit('setMyDisposition', array)
