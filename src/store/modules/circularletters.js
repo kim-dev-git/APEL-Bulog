@@ -1,6 +1,6 @@
 import { db, Timestamp, storage} from '@/firebase'
 
-const END_POINT = 'employmentAgreement'
+const END_POINT = 'circularLetter'
 const ref = db.collection(END_POINT)
 
 const state = {
@@ -10,14 +10,11 @@ const state = {
 }
 
 const mutations = {
-  setEmploymentAgreements(state, val) {
+  setCircularLetters(state, val) {
     state.collection = val
   },
-  setEmploymentAgreement(state, val) {
+  setCircularLetter(state, val) {
     state.document = val
-  },
-  setEmploymentAgreementDisposition(state, val) {
-    state.disposition = val
   },
 }
 
@@ -31,7 +28,7 @@ const actions = {
 
     if(form.file){
       var file = form.file
-      var storageRef = await storage.ref('employment-agreement/' + id + '.' + file.name.split('.').pop());
+      var storageRef = await storage.ref('circular-letter/' + id + '.' + file.name.split('.').pop());
       var task = storageRef.put(file)
       task.on('state_changed', snapshot => {
         var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100).toFixed(0)
@@ -69,11 +66,11 @@ const actions = {
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
-              body: `Perjanjian kerja berhasil ditambahkan.`,
+              body: `Surat Edaran berhasil ditambahkan.`,
             }, { root: true })
           }).catch(err => {
             dispatch('notifications/post', {
-              title: `Perjanjian kerja gagal ditambahkan.`,
+              title: `Surat Edaran gagal ditambahkan.`,
               body: err,
               timeout: 60
             }, { root: true })
@@ -92,7 +89,7 @@ const actions = {
       const query = await ref.doc(id).get()
       const object = query.data()
       object.id = id
-      commit('setEmploymentAgreement', object)
+      commit('setCircularLetter', object)
     } else {
       const query = await ref.onSnapshot(snapshoot => {
         let array = []
@@ -104,7 +101,7 @@ const actions = {
           array.push(object)
         })
 
-        commit('setEmploymentAgreements', array)
+        commit('setCircularLetters', array)
       })
     }
   },
@@ -115,7 +112,7 @@ const actions = {
     if(form.file){
       var file = form.file
 
-      var storageRef = await storage.ref('employment-agreement/' + id + '.' + file.name.split('.').pop())
+      var storageRef = await storage.ref('circular-letter/' + id + '.' + file.name.split('.').pop())
       var task = storageRef.put(file)
       task.on('state_changed', snapshot => {
         var percentage = ((snapshot.bytesTransferred/snapshot.totalBytes)*100).toFixed(0)
@@ -153,11 +150,11 @@ const actions = {
             commit('setLoading', null, { root: true })
             dispatch('notifications/post', {
               // title: 'Update profil berhasil.',
-              body: `Perjanjian kerja berhasil diupdate.`,
+              body: `Surat Edaran berhasil diupdate.`,
             }, { root: true })
           }).catch(err => {
             dispatch('notifications/post', {
-              title: `Perjanjian kerja gagal diupdate.`,
+              title: `Surat Edaran gagal diupdate.`,
               body: err,
               timeout: 60
             }, { root: true })
@@ -175,11 +172,11 @@ const actions = {
         commit('setLoading', null, { root: true })
         dispatch('notifications/post', {
           // title: 'Update profil berhasil.',
-          body: `Perjanjian kerja berhasil diupdate.`,
+          body: `Surat Edaran berhasil diupdate.`,
         }, { root: true })
       }).catch(err => {
         dispatch('notifications/post', {
-          title: `Perjanjian kerja gagal diupdate.`,
+          title: `Surat Edaran gagal diupdate.`,
           body: err,
           timeout: 60
         }, { root: true })
@@ -196,14 +193,14 @@ const actions = {
 
     await ref.doc(fax.id).delete().then(function() {
       if(fax.fileURL) {
-        var storageRef = storage.ref('employment-agreement/' + fax.id + '.' + fax.fileExt)
+        var storageRef = storage.ref('circular-letter/' + fax.id + '.' + fax.fileExt)
         storageRef.delete()
       }
       dispatch('get')
       commit('setLoading', null, { root: true })
       dispatch('notifications/post', {
         // title: 'Update profil berhasil.',
-        body: `Perjanjian kerja berhasil dihapus.`,
+        body: `Surat Edaran berhasil dihapus.`,
       }, { root: true })
     }).catch(err => {
       commit('setLoading', null, { root: true })

@@ -121,9 +121,17 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/surat-edaran',
+    name: 'CircularLetters',
+    component: lazyLoad('CircularLetters'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/perjanjian-kerja',
-    name: 'EmploymentAgreement',
-    component: lazyLoad('EmploymentAgreement'),
+    name: 'EmploymentAgreements',
+    component: lazyLoad('EmploymentAgreements'),
     meta: {
       requiresAuth: true
     }

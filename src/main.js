@@ -41,5 +41,6 @@ auth.onAuthStateChanged((user) => {
     store.dispatch('internalnotes/get')
     store.dispatch('warrants/get')
     store.dispatch('employmentagreement/get')
+    store.dispatch('circularletters/get')
   }
 })
