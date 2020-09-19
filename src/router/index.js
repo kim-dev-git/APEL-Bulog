@@ -113,6 +113,14 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/surat-perintah',
+    name: 'Warrants',
+    component: lazyLoad('Warrants'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

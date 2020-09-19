@@ -8,6 +8,7 @@ import mailout from './modules/mailout'
 import faxin from './modules/faxin'
 import faxout from './modules/faxout'
 import internalnotes from './modules/internalnotes'
+import warrants from './modules/warrants'
 
 Vue.use(Vuex)
 
@@ -68,5 +69,6 @@ export default new Vuex.Store({
     faxin,
     faxout,
     internalnotes,
+    warrants,
   },
 })
