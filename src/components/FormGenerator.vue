@@ -17,7 +17,6 @@ export default {
   ],
   data: () => ({
     valid: null,
-    
     input: {
       data: {},
       forms: [],
@@ -26,6 +25,7 @@ export default {
   methods: {
     generateForm() {
       const vm = this
+      
       const forms = vm.forms
       const rules = vm.rules
       var data = vm.input.data

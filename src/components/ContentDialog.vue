@@ -3,6 +3,7 @@
     persistent
     max-width="400"
     v-model="value"
+    :key="reRender"
   >
     <v-card
       class="pa-4">
@@ -26,12 +27,12 @@
         <v-btn
           text
           color="grey"
-          @click="$emit('input', false)" >
+          @click="$emit('input', false), reRender += 1" >
           <span class="mx-4" v-text="'Batal'" />
         </v-btn>
         <v-btn
           color="primary"
-          @click="$emit('save')" >
+          @click="$emit('save'), reRender += 1" >
           <span class="mx-4" v-text="buttonSave" />
         </v-btn>
       </v-card-actions>
@@ -47,7 +48,8 @@ export default {
     'buttonSave',
   ],
   data: () => ({
-    dialogActive: true
+    dialogActive: true,
+    reRender: 0
   }),
 }
 </script>

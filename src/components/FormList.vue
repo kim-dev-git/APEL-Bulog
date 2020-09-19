@@ -1,8 +1,8 @@
 <template>
   <div id="form-list">
     <div
-      v-for="form in input.forms"
-      :key="form.value" >
+      v-for="(form, index) in input.forms"
+      :key="index" >
       <FormItem
         :form="form"
         v-model="input.data[form.value]"
