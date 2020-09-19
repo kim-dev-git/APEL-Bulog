@@ -27,6 +27,13 @@ export default {
     print() {
       var vm = this
       const item = JSON.parse(JSON.stringify(this.body))
+      if(item.length === 0) {
+        this.$store.dispatch('notifications/post', {
+          title: 'Data tidak ada.',
+          body: `Print gagal karena data tidak ada.`,
+        })
+        return
+      }
       var doc = new jsPDF()
       const imgData = headerBulog
       
