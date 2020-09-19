@@ -46,7 +46,7 @@
             solo
           />
           <v-spacer v-if="!$vuetify.breakpoint.smAndUp" />
-          <v-switch v-model="perMonth" label="Perbulan" inset dense />
+          <v-switch v-model="perMonth" label="Perbulan" :class="$vuetify.breakpoint.mdAndUp ? 'mx-4' : ''" inset dense />
         </v-layout>
       </v-flex>
       
