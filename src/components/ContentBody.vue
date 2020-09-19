@@ -10,7 +10,7 @@
             v-text="title"
           />
           <v-text-field
-            v-if="!$vuetify.breakpoint.mdAndUp"
+            v-if="!$vuetify.breakpoint.mdAndUp && !showAll"
             type="month"
             v-model="month"
             class="mb-n7"
@@ -28,17 +28,16 @@
             class="text-none"
             @click="$emit('button-click')" >
             <v-icon left class="ml-0" v-text="'mdi-plus'" />
-            <span class="mr-2" v-text="buttonText" />
+            <span class="mr-2" v-text="!$vuetify.breakpoint.smAndUp ? 'Tambah' : buttonText" />
           </v-btn>
-          <v-spacer v-if="!$vuetify.breakpoint.smAndUp" />
           <print-table
             :title="title"
             :body="items"
             :headers="headersPrint"
-            class="mx-sm-4"
+            class="mx-4"
           />
           <v-text-field
-            v-if="$vuetify.breakpoint.mdAndUp"
+            v-if="$vuetify.breakpoint.mdAndUp && !showAll"
             type="month"
             v-model="month"
             class="mb-n7"
@@ -46,6 +45,8 @@
             dense
             solo
           />
+          <v-spacer v-if="!$vuetify.breakpoint.smAndUp" />
+          <v-switch v-model="showAll" label="Tampilkan semua" :class="!showAll ? 'mx-4' : ''" inset dense />
         </v-layout>
       </v-flex>
       
@@ -129,6 +130,7 @@ export default {
     expanded: [],
     search: null,
     month: null,
+    showAll: true
   }),
   computed: {
     userProfile() {
@@ -138,8 +140,11 @@ export default {
       return this.$store.state.selectedMonth
     },
     filterByMonth() {
+      if(this.showAll) {
+        return this.items
+      }
       if(!this.selectedMonth || !this.items) {
-        return
+        return []
       }
       var selectedMonth = this.selectedMonth
       var year = Number(selectedMonth.substr(0, 4))
