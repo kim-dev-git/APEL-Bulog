@@ -104,6 +104,15 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/nota-intern/:id/disposisi',
+    name: 'InternalNotesDisposition',
+    component: lazyLoad('InternalNotesDisposition'),
+    props: true,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

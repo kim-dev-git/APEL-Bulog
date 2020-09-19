@@ -11,7 +11,6 @@
     </section>
 
     <section
-      v-if="userProfile.position !== 'Pimwil' && userProfile.position !== 'TU'"
       class="mx-n1 px-1">
       <v-card-title class="ml-n4 headline text--secondary" v-text="'Disposisi (' + myDisposition.length + ')'" />
       <v-card

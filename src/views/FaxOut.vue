@@ -6,7 +6,7 @@
       :headers="headers"
       :headersPrint="headersPrint"
       :items="faxOut"
-      :sortBy="'createdAt.seconds'"
+      sortBy="createdAt.seconds"
       desc
       @button-click="dialogAdd = true"
       expand >

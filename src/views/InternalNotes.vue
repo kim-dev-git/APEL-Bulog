@@ -188,6 +188,7 @@ export default {
       { label: 'Perihal', type: 'text', value: 'subject' },
     ],
     menuActions: [
+      { text: 'Disposisi', icon: 'mdi-email-send-outline', color: 'info', action: 'disposition' },
       { text: 'Download', icon: 'mdi-file-download-outline', color: 'success', action: 'download' },
       { text: 'Edit', icon: 'mdi-file-document-edit-outline', color: 'primary', action: 'edit' },
       { text: 'Hapus', icon: 'mdi-delete-outline', color: 'error', action: 'delete' },
@@ -243,6 +244,9 @@ export default {
           break
         case 'download':
           window.open(item.fileURL, '_blank')
+          break
+        case 'disposition':
+          this.$router.push('/nota-intern/' + item.id + '/disposisi')
           break
         default:
           break
