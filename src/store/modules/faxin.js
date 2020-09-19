@@ -1,4 +1,4 @@
-import { db, Timestamp } from '@/firebase'
+import { db, Timestamp, storage } from '@/firebase'
 
 const END_POINT = 'faxIn'
 const ref = db.collection(END_POINT)
