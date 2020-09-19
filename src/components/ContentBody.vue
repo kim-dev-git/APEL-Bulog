@@ -32,7 +32,7 @@
           </v-btn>
           <print-table
             :title="title"
-            :body="items"
+            :body="filteredItems()"
             :headers="headersPrint"
             class="mx-4"
           />
