@@ -94,7 +94,7 @@
     
     <content-dialog
       v-model="dialogAdd"
-      title="Tambah Fax Masuk"
+      title="Tambah Surat Perintah Masuk"
       buttonSave="Simpan"
       @save="createWarrants()" >
 
@@ -106,7 +106,7 @@
 
     <content-dialog
       v-model="dialogEdit"
-      title="Edit Fax Masuk"
+      title="Edit Surat Perintah Masuk"
       buttonSave="Update"
       @save="editWarrants()" >
 
@@ -118,7 +118,7 @@
 
     <dialog-confirm id="dialog-remove"
       v-model="dialogRemove"
-      title="Yakin hapus Fax ini?"
+      title="Yakin hapus Surat Perintah ini?"
       buttonText="Hapus"
       :remove="true"
       @action="removeWarrants()">
@@ -129,7 +129,7 @@
         <v-layout
           v-if="editForms"
           column>
-          <span v-text="'No Fax'" class="text--secondary subtitle-2" />
+          <span v-text="'No Surat Perintah'" class="text--secondary subtitle-2" />
           <span v-if="editForms.no" v-text="editForms.no" class="font-weight-bold" />
           <span v-else v-text="'-'" class="font-weight-bold" />
           <v-divider class="my-2" />
@@ -166,8 +166,8 @@ export default {
       { text: '', value: 'action', sortable: false },
     ],
     headersPrint: [
-      { header: 'Perihal', dataKey: 'subject' },
       { header: 'Nomor', dataKey: 'no' },
+      { header: 'Perihal', dataKey: 'subject' },
       // { header: 'Untuk', dataKey: 'to' },
       // { header: 'Tujuan', dataKey: 'from' },
       { header: 'Tanggal', dataKey: 'createdAt' },

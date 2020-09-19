@@ -121,6 +121,14 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/perjanjian-kerja',
+    name: 'EmploymentAgreement',
+    component: lazyLoad('EmploymentAgreement'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

@@ -1,11 +1,11 @@
 <template>
   <div id="internal-notes">
     <content-body
-      title="Nota Intern"
-      buttonText="Tambah Nota Intern"
+      title="Perjanjian Kerja"
+      buttonText="Tambah Perjanjian Kerja"
       :headers="headers"
       :headersPrint="headersPrint"
-      :items="internalNotes"
+      :items="employmentAgreements"
       :sortBy="'createdAt.seconds'"
       desc
       @button-click="dialogAdd = true" >
@@ -94,9 +94,9 @@
     
     <content-dialog
       v-model="dialogAdd"
-      title="Tambah Nota Intern Masuk"
+      title="Tambah Perjanjian Kerja Masuk"
       buttonSave="Simpan"
-      @save="createInternalNotes()" >
+      @save="createEmploymentAgreements()" >
 
       <form-generator
         v-model="addForms"
@@ -106,9 +106,9 @@
 
     <content-dialog
       v-model="dialogEdit"
-      title="Edit Nota Intern Masuk"
+      title="Edit Perjanjian Kerja Masuk"
       buttonSave="Update"
-      @save="editInternalNotes()" >
+      @save="editEmploymentAgreements()" >
 
       <form-generator
         v-model="editForms"
@@ -118,10 +118,10 @@
 
     <dialog-confirm id="dialog-remove"
       v-model="dialogRemove"
-      title="Yakin hapus Nota Intern ini?"
+      title="Yakin hapus Perjanjian Kerja ini?"
       buttonText="Hapus"
       :remove="true"
-      @action="removeInternalNotes()">
+      @action="removeEmploymentAgreements()">
       <v-sheet id="dialog-detail"
         class="pa-4 mt-n4 mb-2"
         color="grey lighten-3"
@@ -129,15 +129,15 @@
         <v-layout
           v-if="editForms"
           column>
-          <span v-text="'No Nota Intern'" class="text--secondary subtitle-2" />
+          <span v-text="'No Perjanjian Kerja'" class="text--secondary subtitle-2" />
           <span v-if="editForms.no" v-text="editForms.no" class="font-weight-bold" />
           <span v-else v-text="'-'" class="font-weight-bold" />
           <v-divider class="my-2" />
+          <span v-text="'Dari'" class="text--secondary subtitle-2" />
+          <span v-text="editForms.from" class="font-weight-bold" />
+          <v-divider class="my-2" />
           <span v-text="'Perihal'" class="text--secondary subtitle-2" />
           <span v-text="editForms.subject" class="font-weight-bold" />
-          <v-divider class="my-2" />
-          <span v-text="'Kepada'" class="text--secondary subtitle-2" />
-          <span v-text="editForms.to" class="font-weight-bold" />
         </v-layout>
       </v-sheet>
     </dialog-confirm>
@@ -152,7 +152,7 @@ import FormGenerator from '@/components/FormGenerator'
 import DialogConfirm from '@/components/DialogConfirm'
 
 export default {
-  name: 'InternalNotes',
+  name: 'EmploymentAgreements',
   components: {
     ContentBody,
     ContentDialog,
@@ -171,7 +171,7 @@ export default {
     headersPrint: [
       { header: 'Nomor', dataKey: 'no' },
       { header: 'Perihal', dataKey: 'subject' },
-      { header: 'Untuk', dataKey: 'to' },
+      // { header: 'Untuk', dataKey: 'to' },
       { header: 'Tujuan', dataKey: 'from' },
       { header: 'Tanggal', dataKey: 'createdAt' },
     ],
@@ -181,37 +181,36 @@ export default {
     addForms: {},
     editForms: {},
     forms: [
-      { label: 'File Nota Intern', type: 'file', value: 'file' },
+      { label: 'File Perjanjian Kerja', type: 'file', value: 'file' },
       { label: 'Nomor', type: 'text', value: 'no' },
-      { label: 'Untuk', type: 'text', value: 'to' },
+      // { label: 'Untuk', type: 'text', value: 'to' },
       { label: 'Dari', type: 'text', value: 'from' },
       { label: 'Perihal', type: 'text', value: 'subject' },
     ],
     menuActions: [
-      { text: 'Disposisi', icon: 'mdi-email-send-outline', color: 'info', action: 'disposition' },
       { text: 'Download', icon: 'mdi-file-download-outline', color: 'success', action: 'download' },
       { text: 'Edit', icon: 'mdi-file-document-edit-outline', color: 'primary', action: 'edit' },
       { text: 'Hapus', icon: 'mdi-delete-outline', color: 'error', action: 'delete' },
     ],
   }),
   computed: {
-    internalNotes() {
-      return this.$store.state.internalnotes.collection
+    employmentAgreements() {
+      return this.$store.state.employmentagreement.collection
     }
   },
   methods: {
-    createInternalNotes() {
-      this.$store.dispatch('internalnotes/post', this.addForms)
+    createEmploymentAgreements() {
+      this.$store.dispatch('employmentagreement/post', this.addForms)
       this.dialogAdd = false
       this.addForms = {}
     },
-    editInternalNotes() {
-      this.$store.dispatch('internalnotes/put', this.editForms)
+    editEmploymentAgreements() {
+      this.$store.dispatch('employmentagreement/put', this.editForms)
       this.dialogEdit = false
       this.editForms = {}
     },
-    removeInternalNotes() {
-      this.$store.dispatch('internalnotes/remove', this.editForms)
+    removeEmploymentAgreements() {
+      this.$store.dispatch('employmentagreement/remove', this.editForms)
       this.dialogRemove = false
       this.editForms = {}
     },
@@ -244,9 +243,6 @@ export default {
           break
         case 'download':
           window.open(item.fileURL, '_blank')
-          break
-        case 'disposition':
-          this.$router.push('/nota-intern/' + item.id + '/disposisi')
           break
         default:
           break

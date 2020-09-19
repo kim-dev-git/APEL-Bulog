@@ -9,6 +9,7 @@ import faxin from './modules/faxin'
 import faxout from './modules/faxout'
 import internalnotes from './modules/internalnotes'
 import warrants from './modules/warrants'
+import employmentagreement from './modules/employmentagreement'
 
 Vue.use(Vuex)
 
@@ -24,6 +25,7 @@ export default new Vuex.Store({
       { title: 'Fax Keluar', icon: 'mdi-fax', link: '/fax-keluar' },
       { title: 'Nota Intern', icon: 'mdi-note-text', link: '/nota-intern' },
       { title: 'Surat Perintah', icon: 'mdi-mail', link: '/surat-perintah' },
+      { title: 'Perjanjian Kerja', icon: 'mdi-handshake', link: '/perjanjian-kerja' },
     ],
     myDisposition: []
   },
@@ -70,5 +72,6 @@ export default new Vuex.Store({
     faxout,
     internalnotes,
     warrants,
+    employmentagreement,
   },
 })
