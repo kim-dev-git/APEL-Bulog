@@ -1,6 +1,5 @@
 <template>
   <div id="fax-in">
-    {{ faxForms }}
     <content-body
       title="Fax Masuk"
       buttonText="Tambah Fax Masuk"

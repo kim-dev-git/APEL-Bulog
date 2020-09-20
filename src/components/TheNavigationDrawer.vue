@@ -13,9 +13,10 @@
         
         <v-app-bar-nav-icon v-if="!$vuetify.breakpoint.smAndUp" class="mr-4 ml-n1" @click="active = !active" />
 
-        <v-list-item-title v-if="!$vuetify.breakpoint.sm" class="title" v-text="'APEL-Bulog'" />
+        <img src="../assets/logo.png" width="24" />
 
-        <img v-else src="../assets/logo.png" width="24" />
+        <v-list-item-title v-if="!$vuetify.breakpoint.sm" class="title ml-2 ml-sm-8" v-text="'APEL-Bulog'" />
+
 
       </v-layout>
       </v-list-item-content>
