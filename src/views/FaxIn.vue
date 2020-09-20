@@ -213,7 +213,7 @@ export default {
   },
   methods: {
     createFaxIn() {
-      // this.$store.dispatch('faxin/post', this.faxForms)
+      this.$store.dispatch('faxin/post', this.faxForms)
       this.dialogAdd = false
       this.faxForms = {}
     },
