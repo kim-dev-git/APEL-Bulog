@@ -94,50 +94,16 @@ export default {
         body: items
       })
 
-      // doc.autoTable({
-      //   // drawHeaderRow: false,
-      //   theme: 'grid',
-      //   startY: posY,
-      //   body: body,
-      // })
+      var finalY = doc.previousAutoTable.finalY
+      var docWidth = doc.internal.pageSize.getWidth()
+      var leader = 'Arif Mandu'
+      var textWidth = doc.getTextWidth(leader)
 
-      // posY = doc.autoTable.previous.finalY + 8
-
-      // doc.setFontSize("12")
-
-      // doc.text('Isi berita:', posX, posY, null, null)
-
-      // posY = posY + 6
-
-      // var splitText = doc.splitTextToSize(item.content.body, 180)
       
-      // // doc.setFontType("normal")
+      doc.text(leader, docWidth - 50, finalY + 50, null, null, "center" )
+      doc.line(docWidth - 62, finalY + 1 + 50, docWidth - 62 + textWidth, finalY + 1 + 50, null, null, "center")
+      doc.text('Pemimpin', docWidth - 50, finalY + 56, null, null, "center" )
 
-      // for (var i = 0; i < splitText.length; i++) {
-      //   doc.text(posX, posY, splitText[i])
-      //   posY = posY + 6
-      // }
-
-      // const list = item.content.list
-      // for (var i = 0; i < list.length; i++) {
-      //   doc.text(posX, posY, `${ i + 1 }.`)
-      //   splitText = doc.splitTextToSize(list[i], 175)
-      //   for (var j = 0; j < splitText.length; j++) {
-      //     doc.text(posX + 6, posY, splitText[j])
-      //     posY = posY + 6
-      //   }
-      // }
-
-      // splitText = doc.splitTextToSize(item.content.footer, 180)
-
-      // posY = posY + 3
-
-      // for (var i = 0; i < splitText.length; i++) {
-      //   doc.text(posX, posY, splitText[i])
-      //   posY = posY + 6
-      // }
-
-      // doc.save(`${ item.from }-${ item.subject }-${ item.no }.pdf`)
       doc.save(`Laporan ${ this.title }.pdf`)
       doc.autoPrint()
     }
