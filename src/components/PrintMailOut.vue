@@ -37,44 +37,34 @@ export default {
       var posY = 40
       var middle = 105
 
-      doc.text('FAKSMILI DALAM NEGERI', middle, posY, null, null, "center" )
-
       posY = posY + 5
       
-      const body = []
-
-      this.headers.forEach(header => {
-        const array = []
-        array.push(header.header)
-        array.push(item[header.dataKey])
-        body.push(array)
-      })
-
-
-      var container = {
-        drawHeaderRow: function() {
-          // Don't draw header row
-          return false;
-        },
-        columnStyles: {
-          to: {fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold'}
-        }
-      }
-
-      doc.autoTable({
-        // drawHeaderRow: false,
-        theme: 'grid',
-        startY: posY,
-        body: body,
-      })
-
-      posY = doc.autoTable.previous.finalY + 8
+      const data = this.body
+      const width = doc.internal.pageSize.getWidth()
 
       doc.setFontSize("12")
 
-      doc.text('Isi berita:', posX, posY, null, null)
+      doc.text('Banjarmasin, ' + this.$options.filters.fullDate(data.createdAt), width - 20, posY, null, null, 'right')
+      
+      doc.text('Nomor', posX, posY, null, null)
+      doc.text(': ' + (data.no ? data.no : ''), posX + 30, posY, null, null)
+      posY += 6
+      doc.text('Sifat', posX, posY, null, null)
+      doc.text(': ' + 'Penting', posX + 30, posY, null, null)
+      posY += 6
+      doc.text('Lampiran', posX, posY, null, null)
+      doc.text(': ' + data.sheets, posX + 30, posY, null, null)
+      posY += 6
+      doc.text('Perihal', posX, posY, null, null)
+      doc.text(': ' + data.subject, posX + 30, posY, null, null)
+      posY += 18
 
-      posY = posY + 6
+      doc.setFontSize("12")
+
+      doc.text('Kepada Yth. :', posX, posY, null, null)
+      posY += 6
+      doc.text(data.to, posX, posY, null, null)
+      posY += 12
 
       var splitText = doc.splitTextToSize(item.content.body, 180)
       
@@ -87,10 +77,10 @@ export default {
 
       const list = item.content.list
       for (var i = 0; i < list.length; i++) {
-        doc.text(posX, posY, `${ i + 1 }.`)
+        doc.text(posX + 6, posY, `${ i + 1 }.`)
         splitText = doc.splitTextToSize(list[i], 175)
         for (var j = 0; j < splitText.length; j++) {
-          doc.text(posX + 6, posY, splitText[j])
+          doc.text(posX + 12, posY, splitText[j])
           posY = posY + 6
         }
       }
@@ -108,14 +98,13 @@ export default {
 
       var leader = 'Arif Mandu'
       var textWidth = doc.getTextWidth(leader)
-      const width = doc.internal.pageSize.getWidth()
 
       
       doc.text(leader, width - 50, posY + 50, null, null, "center" )
       doc.line(width - 62, posY + 1 + 50, width - 62 + textWidth, posY + 1 + 50, null, null, "center")
       doc.text('Pemimpin', width - 50, posY + 56, null, null, "center" )
 
-      doc.save(`${ item.from }-${ item.subject }${ item.no ? ('-' + item.no) : '' }.pdf`)
+      doc.save(`${ item.from }-${ item.subject }${  item.no ? ('-' + item.no) : '' }.pdf`)
       doc.autoPrint()
     }
   }
