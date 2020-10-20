@@ -120,6 +120,9 @@
                         <span v-text="'Hapus'" />
                       </v-tooltip>
                     </div>
+
+                    <print :data="item" />
+
                   </v-layout>
                 </v-layout>
               </v-layout>
@@ -178,11 +181,14 @@
 import ContentDialog from '@/components/ContentDialog'
 import FormGenerator from '@/components/FormGenerator'
 import DialogConfirm from '@/components/DialogConfirm'
+import Print from '@/components/PrintDisposition'
+
 export default {
   components: {
     ContentDialog,
     FormGenerator,
     DialogConfirm,
+    Print,
   },
   props: [
     'id'

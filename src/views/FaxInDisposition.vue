@@ -91,6 +91,9 @@
                       userProfile.position === item.to"
                     class="align-end">
                     <div>
+
+                      
+
                       <v-tooltip top
                         v-if="userProfile.position !== 'Pimwil' && userProfile.position !== 'TU' && !item.status">
                         <template v-slot:activator="{ on, attrs }">
@@ -120,6 +123,9 @@
                         <span v-text="'Hapus'" />
                       </v-tooltip>
                     </div>
+
+                    <print :data="item" />
+
                   </v-layout>
                 </v-layout>
               </v-layout>
@@ -178,11 +184,14 @@
 import ContentDialog from '@/components/ContentDialog'
 import FormGenerator from '@/components/FormGenerator'
 import DialogConfirm from '@/components/DialogConfirm'
+import Print from '@/components/PrintDisposition'
+
 export default {
   components: {
     ContentDialog,
     FormGenerator,
     DialogConfirm,
+    Print,
   },
   props: [
     'id'
@@ -269,7 +278,7 @@ export default {
     },
     done(item) {
       this.$store.dispatch('faxin/doneDisposition', { id: this.document.id, form: item })
-    }
+    },
   },
   mounted() {
     this.get()
